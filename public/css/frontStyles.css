@@ -1,0 +1,48 @@
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 7.5em;
+  row-gap: 4em;
+  padding: 2em;
+}
+
+.gridItem .portfolio-link{
+  display: flex!important;
+  justify-content: center;
+}
+
+.gridItem .portfolio-link img{
+  max-height: 215px;
+}
+
+.searchParent{
+  width:30%;
+}
+
+@media (max-width: 991px) {
+  .searchParent {
+    width: 100%;
+  }
+  .carousel-item img{
+    width:100%;
+    height: auto;
+  }
+  .portfolio-modal .modal-content h2, .portfolio-modal .modal-content .h2{
+    font-size: 1.5rem;
+  }
+}
+
+
+.nav-link{
+  margin-right: 2em;
+}
+
+@media (min-width: 1400px){
+.container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
+  max-width: 1900px;
+}
+}
+
+.carousel-dark .carousel-control-prev-icon, .carousel-dark .carousel-control-next-icon{
+  display:none !important;
+}
