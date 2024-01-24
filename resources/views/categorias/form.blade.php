@@ -13,6 +13,7 @@
     @endisset
         @csrf
         <div class="container-fluid">
+            Esto es una implementacion
             Nombre de la categoria:<input class="form-control" type="text" name="name" value="{{$categoria->name ?? '' }}"><br>
             <input class="btn btn-dark center" type="submit" value="Enviar">    
         </div>
