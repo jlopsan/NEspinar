@@ -18,3 +18,4 @@ yarn-error.log
 /.vscode
 tests/Pest.php
 /storage/logs/laravel.log
+package-lock.json
