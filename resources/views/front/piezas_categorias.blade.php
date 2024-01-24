@@ -201,6 +201,8 @@
 
 <!-- Mis scripts -->
 <script>
+// QUe se puedan elegir diferentes tamaños de las fotos (Con un modal)
+// Que se pueda escoger el titulo por campo;
 
     window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
 

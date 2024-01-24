@@ -92,11 +92,13 @@ class ProductosController extends Controller
         //$p->etiquetas()->attach($r->etiquetas);
         //$p->items()->attach($r->items);
         foreach($r->items as $item){ 
-            $itemProducto = new ItemsProductos();
-            $itemProducto->productos_id = $p->id;
-            $itemProducto->value = $item['value'] ?? '-';
-            $itemProducto->items_id = $item['id'];
-            $itemProducto->save();
+            if($item['value']!='<p><br></p>'){
+                $itemProducto = new ItemsProductos();
+                $itemProducto->productos_id = $p->id;
+                $itemProducto->value = $item['value'] ?? '-';
+                $itemProducto->items_id = $item['id'];
+                $itemProducto->save();
+            }
         }
         return redirect()->route('buscadorBack', ['idCategoria' => $p->categoria_id]);
     }
