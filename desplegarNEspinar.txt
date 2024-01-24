@@ -1,0 +1,8 @@
+DESPLEGAR PÁGINA NARCISO:
+
+-crear BBDD
+-mover fotos a carpeta storage/app/public
+-composer install
+-php artisan key:generate
+-php artisan storage:link
+-npm run dev
