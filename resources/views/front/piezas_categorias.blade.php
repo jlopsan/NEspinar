@@ -203,8 +203,10 @@
 <script>
 // QUe se puedan elegir diferentes tamaños de las fotos (Con un modal)
 // Que se pueda escoger el titulo por campo;
+// https://rawgit.com/MrRio/jsPDF/master/docs/index.html
 
     window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
+
 
     // Genera un PDF con los datos del producto y la imagen del carrusel.
     // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
@@ -215,8 +217,8 @@
         var items = JSON.parse(json_items);
         
         // Creamos un documento PDF en blanco
-        var doc = new jsPDF('portrait', 'mm', 'a4');   // Creamos el PDF en tamaño A4 y con unidades en mm
-        var fontName = "Roboto-Regular";
+        var doc = new jsPDF('portrait', 'mm', 'a4');
+        var fontName = "Prata-Regular";
         doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
         doc.setFont(fontName);
         window.html2canvas = html2canvas; 
