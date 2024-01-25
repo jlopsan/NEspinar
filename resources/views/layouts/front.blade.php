@@ -19,9 +19,6 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="/css/frontStyles.css" rel="stylesheet" type="text/css" />
-
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
     @yield('css')
 </head>
 
@@ -168,21 +165,12 @@
 
     <!-- Footer-->
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-    
-        .wrapper {
-            min-height: 100%;
+        .main-wrapper {
+            min-height: 100vh;
             position: relative;
         }
     
-        .content {
-            padding-bottom: 60px; /* Altura del footer */
-        }
-    
-        footer {
+        .footer {
             padding: 20px;
             text-align: center;
             width: 100%;
