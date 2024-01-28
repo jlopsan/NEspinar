@@ -6,6 +6,7 @@
 
             <div class="" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
+                    
                     @if (isset($msg) && !blank($msg))
                     <div class="text-center">
                         {{$msg}}
@@ -189,6 +190,7 @@
                     @endif
                 </div>
             </div>
+            
 </div>
 </section>
 <!-- FOOTER -->
@@ -212,6 +214,9 @@
     // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
     function imprimir(json_product, image_id, json_items, category) {
 
+        // Logica de fotos.
+        
+
         // Convertimos los JSON a objetos
         var product = JSON.parse(json_product);
         var items = JSON.parse(json_items);
@@ -225,9 +230,10 @@
 
         // Creamos un HTML con el contenido que queremos que tenga el PDF
         var html = "";
-        html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' [' + "{{$opciones['home_subtitulo']}}" + ']</p><hr>';
+        html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' ' + "{{$opciones['home_subtitulo']}}" + '</p><hr>';
         html += '<p style="font-family: '+fontName+'; font-size: 140%; letter-spacing: 0.1em">' + product.name + '</p>';
         html += '<img src="' + document.getElementById(image_id).src + '" width="100%">';
+
         for (var i = 0; i < items.length; i++) {
             html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em;">' + items[i].name + ':';
             html += items[i].pivot.value.replace(/<p>/g, "<p style='font-family: "+fontName+"; font-size: 100%; letter-spacing: 0.1em;'>");
