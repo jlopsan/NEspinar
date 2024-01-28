@@ -189,6 +189,7 @@
                     @endif
                 </div>
             </div>
+            
 </div>
 </section>
 <!-- FOOTER -->
@@ -203,29 +204,35 @@
 <script>
 // QUe se puedan elegir diferentes tamaños de las fotos (Con un modal)
 // Que se pueda escoger el titulo por campo;
+// https://rawgit.com/MrRio/jsPDF/master/docs/index.html
 
     window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
+
 
     // Genera un PDF con los datos del producto y la imagen del carrusel.
     // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
     function imprimir(json_product, image_id, json_items, category) {
+
+        // Logica de fotos.
+        
 
         // Convertimos los JSON a objetos
         var product = JSON.parse(json_product);
         var items = JSON.parse(json_items);
         
         // Creamos un documento PDF en blanco
-        var doc = new jsPDF('portrait', 'mm', 'a4');   // Creamos el PDF en tamaño A4 y con unidades en mm
-        var fontName = "Roboto-Regular";
+        var doc = new jsPDF('portrait', 'mm', 'a4');
+        var fontName = "Prata-Regular";
         doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
         doc.setFont(fontName);
         window.html2canvas = html2canvas; 
 
         // Creamos un HTML con el contenido que queremos que tenga el PDF
         var html = "";
-        html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' [' + "{{$opciones['home_subtitulo']}}" + ']</p><hr>';
+        html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' ' + "{{$opciones['home_subtitulo']}}" + '</p><hr>';
         html += '<p style="font-family: '+fontName+'; font-size: 140%; letter-spacing: 0.1em">' + product.name + '</p>';
         html += '<img src="' + document.getElementById(image_id).src + '" width="100%">';
+
         for (var i = 0; i < items.length; i++) {
             html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em;">' + items[i].name + ':';
             html += items[i].pivot.value.replace(/<p>/g, "<p style='font-family: "+fontName+"; font-size: 100%; letter-spacing: 0.1em;'>");
