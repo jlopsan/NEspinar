@@ -6,6 +6,7 @@
 
             <div class="" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
+                    
                     @if (isset($msg) && !blank($msg))
                     <div class="text-center">
                         {{$msg}}
