@@ -217,23 +217,271 @@
         // Logica de fotos.
         
 
+    
         // Convertimos los JSON a objetos
         var product = JSON.parse(json_product);
+           /* 
+            {
+                "id": 487,
+                "name": "Silo",
+                "image": "Wet 3.jpg",
+                "categoriaName": "Piezas Arqueológicas",
+                "imagenes": [
+                    {
+                        "id": 1377,
+                        "image": "Wet 2.jpg",
+                        "producto_id": 487,
+                        "created_at": "2024-01-11T12:24:46.000000Z",
+                        "updated_at": "2024-01-11T12:24:46.000000Z"
+                    },
+                    {
+                        "id": 1376,
+                        "image": "Wet 1.jpg",
+                        "producto_id": 487,
+                        "created_at": "2024-01-11T12:24:46.000000Z",
+                        "updated_at": "2024-01-11T12:24:46.000000Z"
+                    }
+                ]
+            }
+        */
+
         var items = JSON.parse(json_items);
+            /*
+
+                [
+                    {
+                        "id": 47,
+                        "name": "Función",
+                        "categoria_id": 1,
+                        "created_at": "2023-08-31T05:00:33.000000Z",
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 1,
+                        "destacado": 1,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 47,
+                            "value": "Contención."
+                        }
+                    },
+                    {
+                        "id": 29,
+                        "name": "Tipología",
+                        "categoria_id": 1,
+                        "created_at": "2023-04-21T08:40:23.000000Z",
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 4,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 29,
+                            "value": "Silo."
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "name": "Número Inventario",
+                        "categoria_id": 1,
+                        "created_at": null,
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 5,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 1,
+                            "value": "<p>E-</p>"
+                        }
+                    },
+                    {
+                        "id": 3,
+                        "name": "Dimensiones",
+                        "categoria_id": 1,
+                        "created_at": null,
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 7,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 3,
+                            "value": "<p>Altura: 24,3 cm; Diámetro: 98,6 cm; Grueso: 2,6 cm.</p>"
+                        }
+                    },
+                    {
+                        "id": 46,
+                        "name": "Descripción / Análisis",
+                        "categoria_id": 1,
+                        "created_at": "2023-08-31T04:56:47.000000Z",
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 12,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 46,
+                            "value": "<p>Fondo de silo, las paredes estaban formadas por ladrillos sin argamasa de unión.</p>"
+                        }
+                    },
+                    {
+                        "id": 39,
+                        "name": "Material/Técnica",
+                        "categoria_id": 1,
+                        "created_at": "2023-06-25T06:52:03.000000Z",
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 13,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 39,
+                            "value": "<p>Pasta anaranjada.</p>"
+                        }
+                    },
+                    {
+                        "id": 40,
+                        "name": "Acabado/Decoración",
+                        "categoria_id": 1,
+                        "created_at": "2023-06-25T06:52:34.000000Z",
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 14,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 40,
+                            "value": "<p>Sin decoración.</p>"
+                        }
+                    },
+                    {
+                        "id": 7,
+                        "name": "Cronología",
+                        "categoria_id": 1,
+                        "created_at": null,
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 15,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 7,
+                            "value": "<p>En estudio.</p>"
+                        }
+                    },
+                    {
+                        "id": 48,
+                        "name": "Paralelos",
+                        "categoria_id": 1,
+                        "created_at": "2023-09-05T17:38:56.000000Z",
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 16,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 48,
+                            "value": "<p>En estudio.</p>"
+                        }
+                    },
+                    {
+                        "id": 6,
+                        "name": "Procedencia",
+                        "categoria_id": 1,
+                        "created_at": null,
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 17,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 6,
+                            "value": "<p>Calle Arapiles, Almería, España.</p>"
+                        }
+                    },
+                    {
+                        "id": 9,
+                        "name": "Bibliografía",
+                        "categoria_id": 1,
+                        "created_at": null,
+                        "updated_at": "2024-01-23T11:46:27.000000Z",
+                        "order": 18,
+                        "destacado": 0,
+                        "pivot": {
+                            "productos_id": 487,
+                            "items_id": 9,
+                            "value": "<p>Inédito.</p>"
+                        }
+                    }
+                ]
+
+            */
+       // console.log(product);
+       // console.log(items);
+       
+
+
+        // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
+        var doc = new jsPDF('portrait', 'pt', 'a4');
         
-        // Creamos un documento PDF en blanco
-        var doc = new jsPDF('portrait', 'mm', 'a4');
         var fontName = "Prata-Regular";
+        var fontNameTitulos= "Cinzel-VariableFont_wght";
         doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
+        doc.addFont('/fonts/'+fontNameTitulos+'.ttf', fontNameTitulos, 'normal');
+        const anchuraDoc = doc.internal.pageSize.getWidth();
+        const alturaDoc = doc.internal.pageSize.getHeight();
+        let nombreAlternativo = false;
+        var margenDerecho= 42.48;
+        var margenIzquierdo= 42.48;
+         
+
+        /*
+        Coordenadas Paginacion. 
+        Esquina superior izquierda: (0, 0)
+        Esquina superior derecha: (210 mm, 0)
+        Esquina inferior izquierda: (0, 297 mm)
+        Esquina inferior derecha: (210 mm, 297 mm)
+        72  puntos pulgada. 25.4 mm /1 pulgada.
+        72/25.4 = 2.834
+        */
+          
+        // BANNER ARRIBA---------------------------------------------------------------------------------------
         doc.setFont(fontName);
+        doc.setFontSize(9);
+        doc.text("{{$opciones['home_titulo']}}",35,33);
+        var longitudST= doc.getStringUnitWidth("{{$opciones['home_subtitulo']}}") * doc.internal.getFontSize();
+        var posicionXSubtitulo = anchuraDoc- margenDerecho - longitudST;
+        doc.text("{{$opciones['home_subtitulo']}}",posicionXSubtitulo,33);
+        doc.line(0, 42.51, 595.14, 42.51);
+
+
+         // TITULO DEL PRODUCTO---------------------------------------------------------------------------------
+        doc.setFont(fontNameTitulos);
+        doc.setFontSize(30);
+        var longitudProductName= doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
+        var xProdName= ((anchuraDoc/2)-(longitudProductName/2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
+        doc.text(`${product.name}`,xProdName,79.352);
+        doc.setFontSize(20);
+        var longItem = doc.getStringUnitWidth(`${items[0].pivot.value}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
+        var xitem = ((anchuraDoc/2)-(longItem/2));
+        doc.text(`${items[0].pivot.value}`,xitem,107.19);
+
+  
+         // FOTOGRAFIAS-----------------------------------------------------------------------------------------
+
+         var imagen = new Image();
+         imagen.src = 
+
+         // CAMPOS----------------------------------------------------------------------------------------------
+        doc.setFontSize(12)
+        doc.setFont(fontName);
+        for (var i = 0; i < items.length; i++){
+        
+            let cordenada = 170+i*28
+            doc.text(`${items[i].name} :`, 56.68,cordenada)
+
+        }
+
+        doc.save("pdf.pdf")
+
         window.html2canvas = html2canvas; 
 
-        // Creamos un HTML con el contenido que queremos que tenga el PDF
+        /* Creamos un HTML con el contenido que queremos que tenga el PDF
         var html = "";
+        html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' ' + "{{$opciones['home_subtitulo']}}" + '</p><hr>';
         html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' ' + "{{$opciones['home_subtitulo']}}" + '</p><hr>';
         html += '<p style="font-family: '+fontName+'; font-size: 140%; letter-spacing: 0.1em">' + product.name + '</p>';
         html += '<img src="' + document.getElementById(image_id).src + '" width="100%">';
-
         for (var i = 0; i < items.length; i++) {
             html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em;">' + items[i].name + ':';
             html += items[i].pivot.value.replace(/<p>/g, "<p style='font-family: "+fontName+"; font-size: 100%; letter-spacing: 0.1em;'>");
@@ -252,8 +500,9 @@
             autoPaging: 'text',
             width: 170, //target width in the PDF document
             windowWidth: 650 //window width in CSS pixels
-        });
-    }
+        });*/
+    
+    } 
 
 
     // Descarga la imagen del producto como un archivo. 
