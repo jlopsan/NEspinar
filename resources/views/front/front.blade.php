@@ -48,27 +48,18 @@
     </div>
     </section>
 
-
     <section class="page-section bg-light" id="team"
         style="background-color: {{ $opciones['color_fondo'] }} !IMPORTANT; --tipografia1: {{ $opciones['tipografia1'] }}">
         <div class="container">
-            <!-- En caso de que aún no hayamos cambiado la base de datos -->
-            @if ($opciones['home_info_adicional'] != 1 && $opciones['home_info_adicional'] != 0)
-                {{ $opciones['home_info_adicional'] }}
-            @else
-            <!-- En caso de que tengamos la base de datos actualizada correctamente -->
-                @if ($opciones['home_info_adicional'])
-                    <div class="Ticatego">{!! $opciones['home_info_adicional_titulo'] !!}</div>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <img class="rounded-circle" style="border: 4px solid {{ $opciones['color_nav'] }}"
-                            src="{!! $opciones['home_info_adicional_image'] !!}" alt="">
-                    </div>
-                    <div class="Ticatego fs-5 mt-4">{!! $opciones['home_info_adicional_subtitulo'] !!}</div>
-                @endif
+            @if ($opciones['home_info_adicional'])
+                <div class="Ticatego">{!! $opciones['home_info_adicional_titulo'] !!}</div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <img class="rounded-circle" style="border: 4px solid {{ $opciones['color_nav'] }}"
+                        src="{!! $opciones['home_info_adicional_image'] !!}" alt="">
+                </div>
+                <div class="Ticatego fs-5 mt-4">{!! $opciones['home_info_adicional_subtitulo'] !!}</div>
             @endif
-
         </div>
-
     </section>
     </div>
 @endsection
