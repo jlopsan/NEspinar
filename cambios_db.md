@@ -17,3 +17,22 @@ A continuación, el SQL que nos permite automatizar esta tarea y establecer el v
 ```sql
 UPDATE opciones SET opciones.type = 'number', opciones.value = 1 WHERE opciones.key = 'home_info_adicional';
 ```
+
+## Normalizacion de registros de la base de datos
+### Añadir etiquetas &lt;p&gt; y &lt;/p&gt; a todos los registros:
+
+Primero se recomienda utilizar esta sentencia para ver que registros van a ser afectados:
+```sql
+USE mi_app;
+SELECT * 
+FROM items_productos
+WHERE VALUE NOT LIKE '%<p%'
+```
+
+Y para modificar los registros añadiendo las etiquetas &lt;p&gt; al principio y &lt;/p&gt; al final se utiliza la siguiente sentencia:
+```sql
+USE mi_app;
+UPDATE items_productos
+SET value = CONCAT("<p>", value, "</p>")
+WHERE VALUE NOT LIKE '%<p%';
+```
