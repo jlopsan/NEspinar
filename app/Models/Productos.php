@@ -71,7 +71,7 @@ class Productos extends Model
                                     ->join("items_productos", "productos.id", "items_productos.productos_id")
                                     ->where("productos.categoria_id", $idCategoria)
                                     ->where("items_productos.items_id", $iditem)
-                                    ->where("items_productos.value", "=", "$valueItem")
+                                    ->where("items_productos.value", "LIKE", "%$valueItem%")
                                     ->distinct()->orderBy('productos.name')->paginate($elementosPorPagina);
         }
         return $productos;
