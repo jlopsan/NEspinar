@@ -96,7 +96,7 @@
                                                                     <div class="carousel-item">
                                                                         <!-- Botones de descarga e impresión de la imagen secundaria -->
                                                                         <div class="d-flex justify-content-center"  style="padding-bottom: 5px">
-                                                                            <button class="btn btn-outline-secondary fa-solid fa-print mt-3" onclick="imprimir('{{json_encode($producto)}}', 'img_secundaria_{{$producto->id}}_{{$contador}}', '{{json_encode($producto->items)}}', '{{$producto->categoriaName}}')">
+                                                                            <button class="btn btn-outline-secondary fa-solid fa-print mt-3" onclick="imprimir('{{addslashes(json_encode($producto,JSON_UNESCAPED_UNICODE))}}', 'img_secundaria_{{$producto->id}}_{{$contador}}', '{{addslashes(json_encode($producto->items,JSON_UNESCAPED_UNICODE))}}', '{{$producto->categoriaName}}')">
                                                                             <button class="btn btn-outline-secondary fa-solid fa-download mt-3" onclick="download('{{ asset("storage/$producto->id/$image->image")}}' , '{{$image->image}}', '{{$producto->name}}', {{$contador}})">
                                                                         </div>
                                                                         <!-- Imagen -->
@@ -214,9 +214,7 @@
     // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
     function imprimir(json_product, image_id, json_items, category) {
 
-        // Logica de fotos.
-        
-
+    
     
         // Convertimos los JSON a objetos
         var product = JSON.parse(json_product);
@@ -244,8 +242,10 @@
                 ]
             }
         */
+     
 
         var items = JSON.parse(json_items);
+        
             /*
 
                 [
@@ -406,25 +406,22 @@
                 ]
 
             */
-       // console.log(product);
-       // console.log(items);
-       
-
 
         // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
         var doc = new jsPDF('portrait', 'pt', 'a4');
-        
         var fontName = "Prata-Regular";
         var fontNameTitulos= "Cinzel-VariableFont_wght";
         doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
         doc.addFont('/fonts/'+fontNameTitulos+'.ttf', fontNameTitulos, 'normal');
+        var margenDerecho= 30;
+        var margenIzquierdo= 30; 
+        var margenTop= 30;
+        var margenBot=30;
+        var interlineado=30; 
         const anchuraDoc = doc.internal.pageSize.getWidth();
         const alturaDoc = doc.internal.pageSize.getHeight();
-        let nombreAlternativo = false;
-        var margenDerecho= 42.48;
-        var margenIzquierdo= 42.48;
-         
-
+      
+     
         /*
         Coordenadas Paginacion. 
         Esquina superior izquierda: (0, 0)
@@ -440,7 +437,8 @@
         doc.setFontSize(9);
         doc.text("{{$opciones['home_titulo']}}",35,33);
         var longitudST= doc.getStringUnitWidth("{{$opciones['home_subtitulo']}}") * doc.internal.getFontSize();
-        var posicionXSubtitulo = anchuraDoc- margenDerecho - longitudST;
+        let margenBanner = 25; 
+        var posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
         doc.text("{{$opciones['home_subtitulo']}}",posicionXSubtitulo,33);
         doc.line(0, 42.51, 595.14, 42.51);
 
@@ -450,27 +448,93 @@
         doc.setFontSize(30);
         var longitudProductName= doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
         var xProdName= ((anchuraDoc/2)-(longitudProductName/2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
-        doc.text(`${product.name}`,xProdName,79.352);
-        doc.setFontSize(20);
+  
+
+        if(doc.getTextDimensions(`${product.name}`).w < anchuraDoc){
+
+            doc.text(`${product.name}`,xProdName,79.352);
+        }else{
+            let nombreEntero= product.name;
+            let tamañoCadena = nombreEntero.length;
+            let PMitad = nombreEntero.substring(0,tamañoCadena/2);
+            let SMitad = nombreEntero.substring(tamañoCadena/2);
+
+            let longMitad = doc.getStringUnitWidth(PMitad) * doc.internal.getFontSize();
+            let xPMitad = ((anchuraDoc/2)-(longMitad/2));
+            doc.text(`${PMitad} -`,xPMitad,79.352);
+
+            let longMitad2 = doc.getStringUnitWidth(SMitad) * doc.internal.getFontSize();
+            xSMitad = ((anchuraDoc/2)-(longMitad2/2));
+            doc.text(`${SMitad}`,xSMitad,79.352+interlineado);
+        };
+        //SUBTITULO--------------------------------------------------------------------------------------------------------------------------------
+        doc.setFontSize(18);
         var longItem = doc.getStringUnitWidth(`${items[0].pivot.value}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
         var xitem = ((anchuraDoc/2)-(longItem/2));
-        doc.text(`${items[0].pivot.value}`,xitem,107.19);
 
-  
+        if(doc.getTextDimensions(`${items[0].pivot.value}`).w < anchuraDoc){
+            doc.text(`${items[0].pivot.value.replace(/\./g, '')}`,xitem,135);
+        }
+        else{
+            var subtitulo = items[0].pivot.value.replace(/\./g, '');
+            var tamañoSub = subtitulo.length;
+            let pmitadSub = subtitulo.substring(0,tamañoSub/2);
+            let smitadSub = subtitulo.substring(tamañoSub/2);
+
+            let longMitadSub = doc.getStringUnitWidth(pmitadSub) * doc.internal.getFontSize();
+            let xPMitadSub = ((anchuraDoc/2)-(longMitadSub/2));
+            doc.text(`${pmitadSub} - `, xPMitadSub, 140);
+
+            let longMitadSub2 = doc.getStringUnitWidth(smitadSub) * doc.internal.getFontSize();
+            let xSMitadsub = ((anchuraDoc/2)-(longMitadSub2/2));
+            doc.text(`${smitadSub}`, xSMitadsub, 140+interlineado);
+        }
+       
+
          // FOTOGRAFIAS-----------------------------------------------------------------------------------------
 
          var imagen = new Image();
-         imagen.src = 
+         imagen.src = document.getElementById(image_id).src;
+         var anchoOriginal= imagen.naturalWidth;
+         var anchoOriginalPT= anchoOriginal/1.3;
+         var alturaOriginal = imagen.naturalHeight;
+         var alturaOriginalPT = alturaOriginal/1.3
+         var anchuraDeseada = 320;
+         var ratio = anchoOriginalPT/alturaOriginalPT;
+         var alturaDeseada = anchuraDeseada/ratio;
+        
+         xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
+         /*
+         console.log("ancho Original Foto: ");
+         console.log(anchoOriginal);
+         console.log("Ancho original Puntos: ");
+         console.log(anchoOriginalPT);
+         console.log("---------------------------");
+         console.log("Altura Original");
+         console.log(alturaOriginal);
+         console.log("Altura original PT");
+         console.log(alturaOriginalPT);
+         console.log("-----------------------");
+         console.log("anchura deseada");
+         console.log(anchuraDeseada);
+         console.log("Ratio");
+         console.log(ratio);
+         console.log("----------------");
+         console.log("Altura deseada");
+         console.log( alturaDeseada);
+        */
+         doc.addImage(imagen,"JPG",xImagen,200,anchuraDeseada,alturaDeseada);
 
          // CAMPOS----------------------------------------------------------------------------------------------
         doc.setFontSize(12)
         doc.setFont(fontName);
         for (var i = 0; i < items.length; i++){
         
-            let cordenada = 170+i*28
+            let cordenada = 270+i*28
             doc.text(`${items[i].name} :`, 56.68,cordenada)
 
         }
+      
 
         doc.save("pdf.pdf")
 
