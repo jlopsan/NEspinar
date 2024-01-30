@@ -6,7 +6,7 @@
 
 - **"home_info_adicional_titulo"**: Hace referencia al titulo del área de información adicional. Valor recomendado: "**COLECCIONES DE**".
 
-- **"home_info_adicional_image"**: Hace referencia al nombre de una imagen que se mostrará entre titulo y subtitulo. Dicha imagen deberá encontrarse en la carpeta /public de laravel. Valor recomendado: "**narciso_espinar_campra.jpg**"
+- **"home_info_adicional_image"**: Hace referencia al nombre de una imagen que se mostrará entre titulo y subtitulo. Dicha imagen deberá encontrarse en la carpeta "**/storage/app/public/images**" de laravel. Valor recomendado: "**narciso_espinar_campra.jpg**"
 
 - **"home_info_adicional_subtitulo"**: Hace referencia al subtitulo del área de información adicional, justo debajo de la imagen. Valor recomendado: "**NARCISO ESPINAR CAMPRA**".
 
@@ -19,11 +19,11 @@ UPDATE opciones SET opciones.type = 'number', opciones.value = 1 WHERE opciones.
 ```
 
 ## Normalizacion de registros de la base de datos
+
 ### Añadir etiquetas &lt;p&gt; y &lt;/p&gt; a todos los registros:
 
 Primero se recomienda utilizar esta sentencia para ver que registros van a ser afectados:
 ```sql
-USE mi_app;
 SELECT * 
 FROM items_productos
 WHERE VALUE NOT LIKE '%<p%'
@@ -31,8 +31,15 @@ WHERE VALUE NOT LIKE '%<p%'
 
 Y para modificar los registros añadiendo las etiquetas &lt;p&gt; al principio y &lt;/p&gt; al final se utiliza la siguiente sentencia:
 ```sql
-USE mi_app;
 UPDATE items_productos
 SET value = CONCAT("<p>", value, "</p>")
 WHERE VALUE NOT LIKE '%<p%';
+```
+
+### Eliminar todos los registros vacíos &lt;p&gt;&lt;br&gt;&lt;/p&gt; y &lt;p&gt;&lt;/p&gt; de la base de datos
+
+Si hemos realizado el anterior paso, nos encontraremos con varios campos en la tabla **items_productos** cuyo valor es prescindible por el nuevo funcionamiento de la aplicación y que ya no son insertables de ninguna forma en la base de datos. Vamos a eliminarlos. Para ello ejecutaremos el siguiente script.
+
+```sql
+DELETE FROM items_productos WHERE value = '<p><br></p>' OR value = '<p></p>';
 ```
