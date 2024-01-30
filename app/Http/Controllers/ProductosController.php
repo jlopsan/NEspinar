@@ -37,19 +37,26 @@ class ProductosController extends Controller
         return view('productos.form', $data);
     }
 
-    //Hemos cambiado cosa aquí
+    //** Esta funcion va a sanear los datos de entrada pasa los &nbsp; a " " y los &amp a "&"
+    public function cleanDataEntry($string){
+        $string = str_replace(['&nbsp;', '&amp;'], [' ', '&'], $string);
+        return $string;
+    }
+
+    //** Funcion que guarda un registro de un producto
     public function store(Request $r) {
         $image = $r->file('image');
         $images = $r->file('images');
         $p = new Productos($r->all());
-        if (!blank($image)) {
+
+        if (!blank($image)) { //** Si se envia una imagen se guarda el producto y se guarda la imagen en storage/public/{{id del objeto}}/{{nombre de la imagen}}
             $image_name = $image->getClientOriginalName();
-            $p->save();
+            $p->save();     //** Guarda el producto para obtener un id
             $image->storeAs("public/$p->id", $image_name);
             Storage::setVisibility("public/$p->id", "public");
             Storage::setVisibility("public/$p->id/$image_name", "public");
 
-            // Genera miniatura
+            //Genera miniatura y la guarda en la misma carpeta de la imagen original con el nombre mini_{{nombre original}}
             $miniatura = Image::make($image);
             // Vamos a hacer que la imagen miniatura mida 1000 px en su lado más largo
             if ($miniatura->height() > $miniatura->width()) {
@@ -66,7 +73,7 @@ class ProductosController extends Controller
         $p->image = $image_name ?? '';
         $p->save();
        
-        if(!blank($images)){
+        if(!blank($images)){//** si existen imagenes extra tambien la guarda con miniatura
             foreach($images as $i){
                 $i_name = $i->getClientOriginalName();
                 $img = new Imagenes();
@@ -89,13 +96,14 @@ class ProductosController extends Controller
                 Storage::setVisibility("public/$p->id/$miniatura_name", "public");            
             }
         }
+
         //$p->etiquetas()->attach($r->etiquetas);
         //$p->items()->attach($r->items);
         foreach($r->items as $item){ 
             if($item['value']!='<p><br></p>'){
                 $itemProducto = new ItemsProductos();
                 $itemProducto->productos_id = $p->id;
-                $itemProducto->value = $item['value'] ?? '-';
+                $itemProducto->value = self::cleanDataEntry($item['value']) ?? '-';
                 $itemProducto->items_id = $item['id'];
                 $itemProducto->save();
             }
@@ -174,15 +182,18 @@ class ProductosController extends Controller
         }
        
         foreach($r->items as $item){ 
-            $itemProducto = ItemsProductos::where('items_id', $item['id'])->where('productos_id', $id)->first() ?? new ItemsProductos();
+            $itemProducto = ItemsProductos::where('items_id', $item['id'])->where('productos_id', $id)->first() ?? new ItemsProductos(); //** primero busca si existe el items_producto, si no existe crea uno nuevo
+            
             if(!blank($itemProducto)){
-                $itemProducto->value = $item['value'] ?? '-';
-                if(!blank($itemProducto->item) && $itemProducto->item->destacado) $itemProducto->value = rtrim(strip_tags($itemProducto->value));
-                $itemProducto->productos_id = $id;
-                $itemProducto->items_id = $item['id'];
-                $itemProducto->save();
+                if($item['value']=='<p><br></p>'){
+                    $itemProducto -> delete();
+                }else{
+                    $itemProducto->productos_id = $id;
+                    $itemProducto->value = self::cleanDataEntry($item['value']) ?? '-';
+                    $itemProducto->items_id = $item['id'];
+                    $itemProducto->save();
+                }
             }
-
         }
         $p->save();
         return redirect()->route('buscadorBack', ['idCategoria' => $p->categoria_id]);
