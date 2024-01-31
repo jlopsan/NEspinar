@@ -20,7 +20,7 @@
                     @foreach($valores as $key => $valor)
                     @php
                         $valorDecoded = html_entity_decode(strip_tags($valor->value));
-                        $valorItem = $valorDecoded == "" ? "Sin Valor" : $valorDecoded;
+                        $valorItem = $valorDecoded == "" ? "Sin Categorizar" : $valorDecoded;
                     @endphp
                     <div class="gridItem">
                         <div class="portfolio-item">
