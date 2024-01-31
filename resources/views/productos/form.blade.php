@@ -21,7 +21,7 @@
 </form>
 @else
 <!-- CASO 2: Vamos a hacer insert de un producto nuevo -->
-    <form action="{{ route('productos.store') }}" method="POST" id="formulario" enctype="multipart/form-data">
+    <form action="{{ route('productos.store') }}" method="POST" id="formulario" enctype="multipart/form-data"">
 @endisset
 
         @csrf
@@ -179,6 +179,7 @@
                 document.getElementById("submitButton").disabled = true;
             }
         }
+
     </script>
 
 

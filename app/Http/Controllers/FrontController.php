@@ -7,6 +7,7 @@ use App\Models\Categorias;
 use App\Models\Opciones;
 use App\Models\Items;
 use Illuminate\Http\Request;
+use stdClass;
 
 class FrontController extends Controller
 {
@@ -43,7 +44,16 @@ class FrontController extends Controller
             }
 
             $valores = array_unique($valores, SORT_REGULAR);
+            
+            $numProductosSinCategoria = self::compruebaSinCategorizar($idItemDestacado, $id);
+            
+            $objeto = new stdClass();
+            $objeto->value = 'Sin Categorizar';
 
+            if($numProductosSinCategoria > 0) {
+                array_push($valores, $objeto);
+            }
+            
             $data['valores'] = $valores;
             $data['categoria'] = $categoria;
             $data['idItem'] = $idItemDestacado;
@@ -63,6 +73,20 @@ class FrontController extends Controller
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'textoBusqueda' => $r->textoBusqueda, 'opciones' => $opciones]);    
         }
+    }
+
+    public function compruebaSinCategorizar($iditem, $idCategoria) {
+        return Productos::select("productos.id", "productos.name", "productos.image", "categorias.name as categoriaName")
+                                    ->leftJoin("items_productos", function($join) use ($iditem) {
+                                        $join->on("productos.id", "=", "items_productos.productos_id")
+                                        ->where("items_productos.items_id", "=", $iditem);    
+                                    })
+                                    ->leftJoin("categorias", "productos.categoria_id", "=", "categorias.id")
+                                    ->leftJoin("items", "categorias.id", "=", "items.categoria_id")
+                                    ->where("productos.categoria_id", "=", $idCategoria)
+                                    ->whereNull("items_productos.value")
+                                    ->distinct('productos.id')
+                                    ->count();
     }
 
     /* Muestra todos los productos de una categoría, filtrados por el valor de un ítem destacado */
