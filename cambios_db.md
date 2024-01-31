@@ -49,7 +49,6 @@ DELETE FROM items_productos WHERE value = '<p><br></p>' OR value = '<p></p>';
 Cuando se insertaban los valores & o " " el programa guardaba \&amp; y \&nbsp; en su lugar, este error se ha solucionado pero quedan residuos en la base de datos los cuales se pueden ver con la siguiente consulta:
 
 ```sql
-use mi_app;
 SELECT *
 FROM items_productos
 WHERE value LIKE '%&amp;%' OR value LIKE '%&nbsp;%'
@@ -58,7 +57,6 @@ WHERE value LIKE '%&amp;%' OR value LIKE '%&nbsp;%'
 para sustituir estos valores por los valores correctos se puede utilizar la siguiente consulta:
 
 ```sql
-use mi_app;
 UPDATE items_productos
 SET value = REPLACE(value, '&amp;', '&')
 WHERE value LIKE '%&amp;%';

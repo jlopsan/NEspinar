@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Productos extends Model
 {
@@ -53,17 +53,20 @@ class Productos extends Model
         $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
         // Si el valor del ítem destacado tiene algo asignado, buscamos todos los productos con ese valor en ese ítem.
         // En cambio, si el ítem destacado no tiene valor asignado, buscamos todos los productos con una cadena vacía en ese ítem.
-        if ($valueItem == "Sin Valor" || $valueItem == "Sin valor") {
-            $productos = Productos::select('productos.id', 'productos.name', 'productos.image', 'categorias.name as categoriaName')
-                                    ->join("categorias", "productos.categoria_id", "categorias.id")
-                                    ->join("items_productos", "productos.id", "items_productos.productos_id")
-                                    ->where("productos.categoria_id", $idCategoria)
-                                    ->where("items_productos.items_id", $iditem)
-                                    ->where("items_productos.value", "=", "")
-                                    ->orWhere("items_productos.value", "=", "<p><br></p>")
-                                    ->orWhere("items_productos.value", "=", "<p></p>")
-                                    ->orWhereNull("items_productos.value")
-                                    ->distinct()->orderBy('productos.name')->paginate($elementosPorPagina);
+        if ($valueItem == "c" || $valueItem == "Sin categorizar") {
+            $productos = Productos::select("productos.id", "productos.name", "productos.image", "categorias.name as categoriaName")
+    ->leftJoin("items_productos", function($join) use ($iditem) {
+        $join->on("productos.id", "=", "items_productos.productos_id")
+             ->where("items_productos.items_id", "=", $iditem);    
+    })
+    ->leftJoin("categorias", "productos.categoria_id", "=", "categorias.id")
+    ->leftJoin("items", "categorias.id", "=", "items.categoria_id")
+    ->where("productos.categoria_id", "=", $idCategoria)
+    ->whereNull("items_productos.value")
+    ->distinct()
+    ->orderBy('productos.name')
+    ->paginate($elementosPorPagina);
+    dd($productos);
                                 }
         else {
             $productos = Productos::select('productos.id', 'productos.name', 'productos.image', 'categorias.name as categoriaName')
