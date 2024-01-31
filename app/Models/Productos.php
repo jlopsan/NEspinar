@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
-use DB;
 
 class Productos extends Model
 {
@@ -53,18 +53,21 @@ class Productos extends Model
         $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
         // Si el valor del ítem destacado tiene algo asignado, buscamos todos los productos con ese valor en ese ítem.
         // En cambio, si el ítem destacado no tiene valor asignado, buscamos todos los productos con una cadena vacía en ese ítem.
-        if ($valueItem == "Sin Valor" || $valueItem == "Sin valor") {
-            $productos = Productos::select('productos.id', 'productos.name', 'productos.image', 'categorias.name as categoriaName')
-                                    ->join("categorias", "productos.categoria_id", "categorias.id")
-                                    ->join("items_productos", "productos.id", "items_productos.productos_id")
-                                    ->where("productos.categoria_id", $idCategoria)
-                                    ->where("items_productos.items_id", $iditem)
-                                    ->where("items_productos.value", "=", "")
-                                    ->orWhere("items_productos.value", "=", "<p><br></p>")
-                                    ->orWhere("items_productos.value", "=", "<p></p>")
-                                    ->orWhereNull("items_productos.value")
-                                    ->distinct()->orderBy('productos.name')->paginate($elementosPorPagina);
-                                }
+        if ($valueItem == "Sin Categorizar") {
+            $productos = Productos::select("productos.id", "productos.name", "productos.image", "categorias.name as categoriaName")
+                                    ->leftJoin("items_productos", function($join) use ($iditem) {
+                                        $join->on("productos.id", "=", "items_productos.productos_id")
+                                        ->where("items_productos.items_id", "=", $iditem);    
+                                    })
+                                    ->leftJoin("categorias", "productos.categoria_id", "=", "categorias.id")
+                                    ->leftJoin("items", "categorias.id", "=", "items.categoria_id")
+                                    ->where("productos.categoria_id", "=", $idCategoria)
+                                    ->whereNull("items_productos.value")
+                                    ->distinct('productos.id')
+                                    ->orderBy('productos.name')
+                                    ->paginate($elementosPorPagina);
+
+        }
         else {
             $productos = Productos::select('productos.id', 'productos.name', 'productos.image', 'categorias.name as categoriaName')
                                     ->join("categorias", "productos.categoria_id", "categorias.id")
@@ -76,8 +79,6 @@ class Productos extends Model
         }
         return $productos;
     }
-
-    
 
     /*Recupera los productos de una categoria ordenados aleatoriamente y los pagina cada X objetos */
     public static function recuperarPorCategoria($id)
@@ -135,9 +136,11 @@ class Productos extends Model
             Tambien las separa por palabras o por la combinacion de palabras segun si están entrecomilladas o no
             Todas estas palabras se van añadiendo a un array el cual es el que se devuelve
         */
+        $cadena = strip_tags($cadena);
+
         $valores = explode('"', $cadena);
         $txtReady = [];
-    
+        
         $diccionario = [
             'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'e', 'o', 'u',
             'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'desde', 'durante',
@@ -161,7 +164,7 @@ class Productos extends Model
         return $txtReady;
     }
     
-    public static function buscador($data)
+    public static function buscador($data)  //** Los comentarios con ** son escritos por javi
     {
         //Funcion la cual contiene los tres buscadores de la pagina web el de categorias el de campos y el general
         //Segun los parametros almacenados dentro de $data y un if anidado se ejecuta una consulta a traves de eloquent u otra
@@ -176,25 +179,25 @@ class Productos extends Model
 
         $txtReady = null;
         if (!empty($txt)) {
-            $txtReady = self::preparacionString($txt);
+            $txtReady = self::preparacionString($txt);  //**Mete en txtReady el texto de busqueda
         }
 
         $results = null;
 
-        if (!empty($items)) {
+        if (!empty($items)) {       //**Filtra los campos de busqueda para asegurarse de que son campos de la categoria seleccionada
             $filteredItems = array_filter($items, function ($item) use ($idCategoria) {
                 return $item['categoria_id'] == $idCategoria && !empty($item['texto']);
             });
 
-            if (!empty($filteredItems)) {
+            if (!empty($filteredItems)) {   //**Este buscador devuelve valores por campos ($filteredItems son los campos)
                  $results = Productos::select('prod1.id', 'prod1.name', 'prod1.image', 'categorias.name as categoriaName')
                 ->from('productos as prod1')
                 ->join('items_productos', 'prod1.id', '=', 'items_productos.productos_id')
                 ->join('categorias', 'prod1.categoria_id', '=', 'categorias.id')
-                ->where('categorias.id', $idCategoria)
-                ->where(function ($query) use ($filteredItems) {
-                    foreach ($filteredItems as $key => $item) {
-                        $txtReadyItem = self::preparacionString($item['texto']);
+                ->where('categorias.id', $idCategoria) //** Hasta aquí selecciona las tablas productos, categorias e items_productos y lo filtra para solo mostrar los que estén en una categoria en concreto
+                ->where(function ($query) use ($filteredItems) { //** FilteredItems son los campos que se van a buscar
+                    foreach ($filteredItems as $key => $item) { //** para cada uno de los campos va a hacer algo
+                        $txtReadyItem = self::preparacionString($item['texto']); //** Limpia el texto del campo
                         $query->where(function ($query) use ($item, $txtReadyItem) {
                             $query->whereIn('prod1.id', function ($subquery) use ($item, $txtReadyItem) {
                                 $subquery->select('items_productos.productos_id')
@@ -205,7 +208,7 @@ class Productos extends Model
                                     ->where('productos.id', DB::raw('prod1.id'))
                                     ->where(function ($subquery) use ($txtReadyItem) {
                                         foreach ($txtReadyItem as $value) {
-                                            $subquery->orWhereRaw("cleanText(items_productos.value) LIKE ?", ['%' . $value . '%']);
+                                            $subquery->orWhereRaw("items_productos.value LIKE ?", ['%' . $value . '%']);
                                         }
                                     });
                             });
@@ -235,7 +238,7 @@ class Productos extends Model
                         foreach ($txtReady as $value) {
                             $query->orWhere(function ($query) use ($value) {
                                 $query
-                                    ->whereRaw("cleanText(items_productos.value) LIKE ?", ['%' . $value . '%']);
+                                    ->whereRaw("items_productos.value LIKE ?", ['%' . $value . '%']);
                             });
                             $query->orWhere(function ($query) use ($value) {
                                 $query
@@ -263,7 +266,7 @@ class Productos extends Model
                         foreach ($txtReady as $value) {
                             $query->orWhere(function ($query) use ($value) {
                                 $query
-                                    ->whereRaw("cleanText(items_productos.value) LIKE ?", ['%' . $value . '%']);
+                                    ->whereRaw("items_productos.value LIKE ?", ['%' . $value . '%']);
                             });
                             $query->orWhere(function ($query) use ($value) {
                                 $query

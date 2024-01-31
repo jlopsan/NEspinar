@@ -39,10 +39,10 @@ class FrontController extends Controller
             $valores = Items::recuperarValores($idItemDestacado);
             
             foreach (array_keys($valores) as $key) {
-                if (str_contains($valores[$key]->value, "&nbsp;") || str_contains($valores[$key]->value, "<p><br></p>")) {
-                    unset($valores[$key]);
-                }
+                $valores[$key]->value = strip_tags($valores[$key]->value);
             }
+
+            $valores = array_unique($valores, SORT_REGULAR);
 
             $data['valores'] = $valores;
             $data['categoria'] = $categoria;
