@@ -43,63 +43,54 @@ class ProductosController extends Controller
         return $string;
     }
 
+    public function saveImage($image, $productId){  //** Esta función guarda una imagen asociada a un producto y crea su miniatura
+        $image_name = $image->getClientOriginalName();
+        $image->storeAs("public/$productId", $image_name);
+        Storage::setVisibility("public/$productId/$image_name", "public");
+
+        $miniatura = Image::make($image);
+        if ($miniatura->height() > $miniatura->width()) {
+            // Altura = 1000, anchura proporcional
+            $miniatura->resize(1000, null, function ($constraint) {$constraint->aspectRatio();});
+        } else {
+            // Anchura = 1000, altura proporcional
+            $miniatura->resize(null, 1000, function ($constraint) {$constraint->aspectRatio();});  
+        }
+        $miniatura_name = 'mini_' . $image_name;
+        $miniatura->save(storage_path("app/public/$productId/$miniatura_name"));
+        Storage::setVisibility("public/$productId/$miniatura_name", "public");
+    }
+
     //** Funcion que guarda un registro de un producto
     public function store(Request $r) {
         $image = $r->file('image');
         $images = $r->file('images');
         $p = new Productos($r->all());
 
-        if (!blank($image)) { //** Si se envia una imagen se guarda el producto y se guarda la imagen en storage/public/{{id del objeto}}/{{nombre de la imagen}}
+        if (!blank($image)) { //** Si existe una imagen principal esta se guarda
+            $p->save();     
+            self::saveImage($image, $p -> id);
             $image_name = $image->getClientOriginalName();
-            $p->save();     //** Guarda el producto para obtener un id
-            $image->storeAs("public/$p->id", $image_name);
-            Storage::setVisibility("public/$p->id", "public");
-            Storage::setVisibility("public/$p->id/$image_name", "public");
 
-            //Genera miniatura y la guarda en la misma carpeta de la imagen original con el nombre mini_{{nombre original}}
-            $miniatura = Image::make($image);
-            // Vamos a hacer que la imagen miniatura mida 1000 px en su lado más largo
-            if ($miniatura->height() > $miniatura->width()) {
-                // Altura = 1000, anchura proporcional
-                $miniatura->resize(1000, null, function ($constraint) {$constraint->aspectRatio();});
-            } else {
-                // Anchura = 1000, altura proporcional
-                $miniatura->resize(null, 1000, function ($constraint) {$constraint->aspectRatio();});  
-            }
-            $miniatura_name = 'mini_' . $image_name;
-            $miniatura->save(storage_path("app/public/$p->id/$miniatura_name"));
-            Storage::setVisibility("public/$p->id/$miniatura_name", "public");            
+            Storage::setVisibility("public/$p->id/$image_name", "public");
         }
         $p->image = $image_name ?? '';
         $p->save();
        
-        if(!blank($images)){//** si existen imagenes extra tambien la guarda con miniatura
-            foreach($images as $i){
-                $i_name = $i->getClientOriginalName();
-                $img = new Imagenes();
-                $i->storeAs("public/$p->id", $i_name);
-                $img->producto_id = $p->id;
-                $img->image = $i_name;
-                $img->save();
-                // Genera miniatura
-                $miniatura = Image::make($i);
-                // Vamos a hacer que la imagen miniatura mida 1000 px en su lado más largo
-                if ($miniatura->height() > $miniatura->width()) {
-                    // Altura = 1000, anchura proporcional
-                    $miniatura->resize(1000, null, function ($constraint) {$constraint->aspectRatio();});
-                } else {
-                    // Anchura = 1000, altura proporcional
-                    $miniatura->resize(null, 1000, function ($constraint) {$constraint->aspectRatio();});  
-                }
-                $miniatura_name = 'mini_' . $i_name;
-                $miniatura->save(storage_path("app/public/$p->id/$miniatura_name"));
-                Storage::setVisibility("public/$p->id/$miniatura_name", "public");            
+        if(!blank($images)){//** si existen imagenes extra se guardan
+            foreach($images as $image){
+                $image_name = $image->getClientOriginalName();
+
+                $newImage = new Imagenes();
+                $newImage->producto_id = $p->id;
+                $newImage->image = $image_name;
+                $newImage->save();
+
+                self::saveImage($image, $p->id);         
             }
         }
 
-        //$p->etiquetas()->attach($r->etiquetas);
-        //$p->items()->attach($r->items);
-        foreach($r->items as $item){ 
+        foreach($r->items as $item){    //** se guardan los campos del producto
             if($item['value']!='<p><br></p>'){
                 $itemProducto = new ItemsProductos();
                 $itemProducto->productos_id = $p->id;
@@ -122,62 +113,41 @@ class ProductosController extends Controller
         return view('productos.form', compact('producto', 'categorias', 'items', 'image', 'opciones'));
     }
 
-    public function update(Request $r, $id) {
+    public function update(Request $r, $id) {   //** Actualiza objetos ya existentes
         $p = Productos::find($id);
         $p->name = $r->name;
         $p->categoria_id = $r->categoria_id;
-        if(!blank($r->file('image'))){
-            $deleteImage = $p->image;
-            Storage::delete("public/" . $id . "/" . $deleteImage);
-            $image = $r->file('image');
-            $image_name = $image->getClientOriginalName();
-            $image->storeAs("public/$p->id", $image_name);
-            Storage::setVisibility("public/$p->id", "public");
-            Storage::setVisibility("public/$p->id/$image_name", "public");
-            $p->image = $image_name;
-            // Genera miniatura
-            $miniatura = Image::make($image);
-            // Vamos a hacer que la imagen miniatura mida 1000 px en su lado más largo
-            if ($miniatura->height() > $miniatura->width()) {
-                // Altura = 1000, anchura proporcional
-                $miniatura->resize(1000, null, function ($constraint) {$constraint->aspectRatio();});
-            } else {
-                // Anchura = 1000, altura proporcional
-                $miniatura->resize(null, 1000, function ($constraint) {$constraint->aspectRatio();});  
-            }
-            $miniatura_name = 'mini_' . $image_name;
-            $miniatura->save(storage_path("app/public/$p->id/$miniatura_name"));
-            Storage::setVisibility("public/$p->id/$miniatura_name", "public");            
 
+        if(!blank($r->file('image'))){  
+            $deleteImage = $p->image;   //** Si hay nueva imgaen principal borrar antigüa y guarda la nueva
+            Storage::delete("public/" . $id . "/" . $deleteImage);
+
+            $image = $r->file('image');
+            self::saveImage($image, $p->id);
+
+            $image_name = $image->getClientOriginalName();
+            $p->image = $image_name;
         }
-        $deleteImages = $r->deleteImages ?? [];
+
+        $deleteImages = $r->deleteImages ?? []; //** borra imagenes secundarias
         foreach($deleteImages as $di){
             $img = Imagenes::where('image', $di)->where('producto_id', $p->id)->first();
             Storage::delete("public/" . $img->producto_id . "/" . $di);
+            Storage::delete("public/" . $img->producto_id . "/mini_" . $di);
             $img->delete();
         }
+
         $images = $r->file('images');
-        if(!blank($images)){
-            foreach($images as $i){
-                $i_name = $i->getClientOriginalName();
-                $i->storeAs("public/$p->id", $i_name);
+        if(!blank($images)){            //** Guarda imágenes nuevas
+            foreach($images as $image){
+
+                $i_name = $image->getClientOriginalName();
+                self::saveImage($image, $p -> id);
+                
                 $img = new Imagenes();
                 $img->producto_id = $p->id;
                 $img->image = $i_name;
-                $img->save();
-                // Genera miniatura
-                $miniatura = Image::make($i);
-                // Vamos a hacer que la imagen miniatura mida 1000 px en su lado más largo
-                if ($miniatura->height() > $miniatura->width()) {
-                    // Altura = 1000, anchura proporcional
-                    $miniatura->resize(1000, null, function ($constraint) {$constraint->aspectRatio();});
-                } else {
-                    // Anchura = 1000, altura proporcional
-                    $miniatura->resize(null, 1000, function ($constraint) {$constraint->aspectRatio();});  
-                }
-                $miniatura_name = 'mini_' . $i_name;
-                $miniatura->save(storage_path("app/public/$p->id/$miniatura_name"));
-                Storage::setVisibility("public/$p->id/$miniatura_name", "public");            
+                $img->save();           
             }
         }
        
