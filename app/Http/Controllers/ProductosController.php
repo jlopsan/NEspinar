@@ -37,13 +37,25 @@ class ProductosController extends Controller
         return view('productos.form', $data);
     }
 
-    //** Esta funcion va a sanear los datos de entrada pasa los &nbsp; a " " y los &amp a "&"
+    //** Esta funcion va a sanear los datos de entrada pasa los &nbsp; a " " y los &amp a "&" y borrar todos los espacios innecesarios en medio del texto
     public function cleanDataEntry($string){
         $string = str_replace(['&nbsp;', '&amp;'], [' ', '&'], $string);
+        $doubleSpaceEncontered = true; 
+        while($doubleSpaceEncontered) {
+            $doubleSpaceEncontered = false;
+            $stringcopy = str_replace(['  '], [' '], $string);
+            if($string != $stringcopy) {
+                $string = $stringcopy;
+                $doubleSpaceEncontered = true;
+            }
+        }
+        $string = str_replace(['<p> ', ' </p>'], ['<p>', '</p>'], $string);
+        $string = str_replace(['<br>'], [''], $string);
         return $string;
     }
 
-    public function saveImage($image, $productId){  //** Esta función guarda una imagen asociada a un producto y crea su miniatura
+    //** Esta función guarda una imagen asociada a un producto y crea su miniatura
+    public function saveImage($image, $productId){  
         $image_name = $image->getClientOriginalName();
         $image->storeAs("public/$productId", $image_name);
         Storage::setVisibility("public/$productId/$image_name", "public");
@@ -65,8 +77,8 @@ class ProductosController extends Controller
     public function store(Request $r) {
         $image = $r->file('image');
         $images = $r->file('images');
-        $p = new Productos($r->all());
-
+        $r->name = self::cleanDataEntry($r->name);
+        $p = new Productos(['name' => self::cleanDataEntry($r->name), 'categoria_id' => $r->categoria_id]);
         if (!blank($image)) { //** Si existe una imagen principal esta se guarda
             $p->save();     
             self::saveImage($image, $p -> id);
@@ -115,7 +127,7 @@ class ProductosController extends Controller
 
     public function update(Request $r, $id) {   //** Actualiza objetos ya existentes
         $p = Productos::find($id);
-        $p->name = $r->name;
+        $p->name = self::cleanDataEntry($r->name);
         $p->categoria_id = $r->categoria_id;
 
         if(!blank($r->file('image'))){  
