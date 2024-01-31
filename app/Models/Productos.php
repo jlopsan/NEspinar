@@ -54,19 +54,19 @@ class Productos extends Model
         $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
         // Si el valor del ítem destacado tiene algo asignado, buscamos todos los productos con ese valor en ese ítem.
         // En cambio, si el ítem destacado no tiene valor asignado, buscamos todos los productos con una cadena vacía en ese ítem.
-        if ($valueItem == "c" || $valueItem == "Sin categorizar") {
+        if ($valueItem == "Sin Categorizar") {
             $productos = Productos::select("productos.id", "productos.name", "productos.image", "categorias.name as categoriaName")
-    ->leftJoin("items_productos", function($join) use ($iditem) {
-        $join->on("productos.id", "=", "items_productos.productos_id")
-             ->where("items_productos.items_id", "=", $iditem);    
-    })
-    ->leftJoin("categorias", "productos.categoria_id", "=", "categorias.id")
-    ->leftJoin("items", "categorias.id", "=", "items.categoria_id")
-    ->where("productos.categoria_id", "=", $idCategoria)
-    ->whereNull("items_productos.value")
-    ->distinct('productos.id')
-    ->orderBy('productos.name')
-    ->paginate($elementosPorPagina);
+                                    ->leftJoin("items_productos", function($join) use ($iditem) {
+                                        $join->on("productos.id", "=", "items_productos.productos_id")
+                                        ->where("items_productos.items_id", "=", $iditem);    
+                                    })
+                                    ->leftJoin("categorias", "productos.categoria_id", "=", "categorias.id")
+                                    ->leftJoin("items", "categorias.id", "=", "items.categoria_id")
+                                    ->where("productos.categoria_id", "=", $idCategoria)
+                                    ->whereNull("items_productos.value")
+                                    ->distinct('productos.id')
+                                    ->orderBy('productos.name')
+                                    ->paginate($elementosPorPagina);
 
         }
         else {
@@ -80,8 +80,6 @@ class Productos extends Model
         }
         return $productos;
     }
-
-    
 
     /*Recupera los productos de una categoria ordenados aleatoriamente y los pagina cada X objetos */
     public static function recuperarPorCategoria($id)
