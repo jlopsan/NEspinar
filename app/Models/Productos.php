@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 
 class Productos extends Model
 {
@@ -63,11 +64,11 @@ class Productos extends Model
     ->leftJoin("items", "categorias.id", "=", "items.categoria_id")
     ->where("productos.categoria_id", "=", $idCategoria)
     ->whereNull("items_productos.value")
-    ->distinct()
+    ->distinct('productos.id')
     ->orderBy('productos.name')
     ->paginate($elementosPorPagina);
-    dd($productos);
-                                }
+
+        }
         else {
             $productos = Productos::select('productos.id', 'productos.name', 'productos.image', 'categorias.name as categoriaName')
                                     ->join("categorias", "productos.categoria_id", "categorias.id")
