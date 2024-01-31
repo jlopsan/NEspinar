@@ -38,7 +38,7 @@ class Items extends Model
             $valores[$key]->value = strip_tags($value->value); 
         } */
         // Quitamos los elementos del array que pudieran estar repetidos después de haber quitado las etiquetas HTML
-        $valores = array_unique($valores, SORT_REGULAR);
+        
         return $valores;
 
     }

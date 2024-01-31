@@ -50,6 +50,7 @@ class ProductosController extends Controller
             }
         }
         $string = str_replace(['<p> ', ' </p>'], ['<p>', '</p>'], $string);
+        $string = str_replace(['<br>'], [''], $string);
         return $string;
     }
 

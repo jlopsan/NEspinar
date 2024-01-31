@@ -26,5 +26,40 @@ SET value = REPLACE(value, '&amp;', '&')
 WHERE value LIKE '%&amp;%';
 
 UPDATE items_productos
-SET value = REPLACE(value, '&nbsp;', '')
+SET value = REPLACE(value, '&nbsp;', ' ')
 WHERE value LIKE '%&nbsp;%';
+
+UPDATE items_productos
+SET value = REPLACE(value, '<br>', '')
+WHERE value LIKE '%<br>%';
+
+DELIMITER //
+
+CREATE FUNCTION eliminar_espacios_extra(input_string VARCHAR(255))
+RETURNS VARCHAR(255)
+BEGIN
+    DECLARE output_string VARCHAR(255);
+    DECLARE i INT DEFAULT 1;
+
+    SET output_string = '';
+
+    WHILE i <= LENGTH(input_string) DO
+        IF SUBSTRING(input_string, i, 1) != ' ' OR
+           (i < LENGTH(input_string) AND SUBSTRING(input_string, i+1, 1) != ' ') THEN
+            SET output_string = CONCAT(output_string, SUBSTRING(input_string, i, 1));
+        END IF;
+        SET i = i + 1;
+    END WHILE;
+
+    RETURN output_string;
+END//
+
+DELIMITER ;
+
+UPDATE items_productos SET value = eliminar_espacios_extra(value);
+
+UPDATE items_productos SET value = REPLACE(value, '<p> ', '<p>')
+WHERE value LIKE '%<p> %';
+
+UPDATE items_productos SET value = REPLACE(value, ' </p>', '</p>') 
+WHERE value LIKE '% </p>%';
