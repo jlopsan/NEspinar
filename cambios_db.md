@@ -62,6 +62,6 @@ SET value = REPLACE(value, '&amp;', '&')
 WHERE value LIKE '%&amp;%';
 
 UPDATE items_productos
-SET value = REPLACE(value, '&nbsp;', ' ')
+SET value = REPLACE(value, '&nbsp;', '')
 WHERE value LIKE '%&nbsp;%';
 ```
