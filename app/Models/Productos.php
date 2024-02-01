@@ -53,7 +53,7 @@ class Productos extends Model
         $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
         // Si el valor del ítem destacado tiene algo asignado, buscamos todos los productos con ese valor en ese ítem.
         // En cambio, si el ítem destacado no tiene valor asignado, buscamos todos los productos con una cadena vacía en ese ítem.
-        if ($valueItem == "Sin Categorizar") {
+        if ($valueItem == "Sin Información") {
             $productos = Productos::select("productos.id", "productos.name", "productos.image", "categorias.name as categoriaName")
                                     ->leftJoin("items_productos", function($join) use ($iditem) {
                                         $join->on("productos.id", "=", "items_productos.productos_id")
