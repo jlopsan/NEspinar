@@ -7,6 +7,8 @@ use App\Models\Categorias;
 use App\Models\Opciones;
 use App\Models\Items;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class FrontController extends Controller
 {
@@ -41,8 +43,16 @@ class FrontController extends Controller
             foreach (array_keys($valores) as $key) {
                 $valores[$key]->value = strip_tags($valores[$key]->value);
             }
-
+            
             $valores = array_unique($valores, SORT_REGULAR);
+
+            $existeProductoSinInformacion = self::compruebaSinInformacion($idItemDestacado, $categoria->id);
+
+            if($existeProductoSinInformacion) {
+                $losaSinInformacion =  new stdClass();
+                $losaSinInformacion->value = 'Sin Información';
+                array_push($valores, $losaSinInformacion);
+            }
 
             $data['valores'] = $valores;
             $data['categoria'] = $categoria;
@@ -63,6 +73,21 @@ class FrontController extends Controller
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'textoBusqueda' => $r->textoBusqueda, 'opciones' => $opciones]);    
         }
+    }
+
+    public function compruebaSinInformacion($iditem, $idCategoria) {
+        return DB::table('items')
+        ->selectRaw('COUNT(productos.id)')
+        ->leftJoin('categorias', 'items.categoria_id', '=', 'categorias.id')
+        ->leftJoin('productos', 'categorias.id', '=', 'productos.categoria_id')
+        ->leftJoin('items_productos', function($join) {
+            $join->on('items.id', '=', 'items_productos.items_id')
+                ->on('productos.id', '=', 'items_productos.productos_id');
+        })
+        ->where('categorias.id', $idCategoria)
+        ->whereNull('items_productos.value')
+        ->where('items.id', $iditem)
+        ->count();
     }
 
     /* Muestra todos los productos de una categoría, filtrados por el valor de un ítem destacado */
