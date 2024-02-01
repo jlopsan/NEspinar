@@ -21,9 +21,9 @@
 </form>
 @else
 <!-- CASO 2: Vamos a hacer insert de un producto nuevo -->
-    <form action="{{ route('productos.store') }}" method="POST" id="formulario" enctype="multipart/form-data">
+    
 @endisset
-
+<form action="{{ route('productos.store') }}" method="POST" id="formulario" enctype="multipart/form-data">
         @csrf
         <div class="container-fluid" id="miFormulario">
             Categoria:<select class="form-select" type="text" name="categoria_id" id="categoria_id" onchange="actualizar_items()">

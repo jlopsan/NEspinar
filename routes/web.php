@@ -43,7 +43,7 @@ Route::get('buscador', [FrontController::class, 'vistaBuscador'])->name('vistaBu
 
 Route::match(['get', 'post'],'buscadorPorcampos', [FrontController::class, 'buscadorPorCampos'])->name('buscadorPorCampos');
 
-Route::get('/vistaPorItemDestacado/{idCategoria}/{idItem}/{valorItem}', [FrontController::class, 'vistaPorItemDestacado'])->name('front.porItemDestacado');
+Route::get('/vistaPorItemDestacado/{idCategoria}/{idItem}/{valorItem}', [FrontController::class, 'vistaPorItemDestacado'])->name('front.porItemDestacado')->where('valorItem', '.*');
 
 // Rutas para las páginas de información legal
 Route::get('acerca_de', [FrontController::class, 'acercaDe'])->name('acerca_de');
