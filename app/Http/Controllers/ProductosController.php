@@ -133,6 +133,7 @@ class ProductosController extends Controller
         if(!blank($r->file('image'))){  
             $deleteImage = $p->image;   //** Si hay nueva imgaen principal borrar antigüa y guarda la nueva
             Storage::delete("public/" . $id . "/" . $deleteImage);
+            Storage::delete("public/" . $id . "/mini_" . $deleteImage);
 
             $image = $r->file('image');
             self::saveImage($image, $p->id);
