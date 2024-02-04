@@ -150,7 +150,7 @@
             <div class="row align-items-center" style="font-family: {{$opciones['tipografia1']}}">
                 <div class="col-lg-4 text-lg-start"><b>Si estás interesado en exponer tu arte online contáctanos: <br>  <div class="colores" style="color: blue">juan.baronviciana@gmail.com - josemanuelgallurt24@gmail.com</b></div></div>
                 <div class="col-lg-4 my-3 my-lg-0">
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="/storage/images/creative_commons.png" /></a>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <a class="link-dark text-decoration-none me-3" href="{{route('politica_privacidad')}}">Politíca de Privacidad</a>

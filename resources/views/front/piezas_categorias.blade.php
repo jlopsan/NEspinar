@@ -23,7 +23,7 @@
                                             <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
                                         </div>
                                         <img class="img-fluid" src='{{asset("storage/$producto->id/mini_$producto->image")}}'
-                                            width="auto">
+                                            width="auto" loading="lazy">
                                     </a>
                                     <div class="portfolio-caption">
                                         <div class="portfolio-caption-heading">{{$producto->name}}</div>
@@ -82,7 +82,8 @@
                                                                     <!-- Imagen -->                                                    
                                                                     <img id="mi_imagen{{$key}}" class="center-block w-40"
                                                                         src='{{asset("storage/$producto->id/mini_$producto->image")}}'
-                                                                        alt="{{$producto->image}}" height="500" />
+                                                                        alt="{{$producto->image}}" height="500" 
+                                                                        loading="lazy"/>
                                                                 </div>
 
                                                                 <!-- Imagenes secundarias -->
@@ -103,7 +104,8 @@
                                                                         <img id="img_secundaria_{{$producto->id}}_{{$contador}}"
                                                                             src='{{asset("storage/$producto->id/mini_$image->image")}}'
                                                                             class="center-block" height="500"
-                                                                            alt="{{$image->image}}">
+                                                                            alt="{{$image->image}}"
+                                                                            loading="lazy">
                                                                     </div>
                                                                 @endforeach
                                                             </div>

@@ -14,7 +14,6 @@
                     {{$item->name}} <input class="form-control" type="text" value='{{$item->pivot->value}}'><br>
                     @endforeach -->
     </div>
-    pero esto que eeeeeeeees
     <script>
         var editor = []; // Array de editores de texto wysiwyg (habrá que crear uno por cada ítem)
     </script>
