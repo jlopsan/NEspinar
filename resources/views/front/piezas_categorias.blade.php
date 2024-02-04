@@ -20,14 +20,19 @@
                                 <div class="portfolio-item">
                                     <a class="portfolio-link" data-bs-toggle="modal" href="#producto{{$producto->id}}">
                                         <div class="portfolio-hover">
-                                            <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                            <div class="portfolio-hover-content"><i class="fas fa-circle-info fa-3x"></i></div>
                                         </div>
+                                        @if ($producto->image!=null)
                                         <img class="img-fluid" src='{{asset("storage/$producto->id/mini_$producto->image")}}'
-                                            width="auto" loading="lazy">
+                                        loading="lazy">
+                                        @else
+                                        <i class="fa-solid fa-question" style="width: 350px; height: 275px;"></i>
+                                        @endif
+                                        <div class="portfolio-caption">
+                                            <div class="portfolio-caption-heading">{{$producto->name}}</div>
+                                        </div>
                                     </a>
-                                    <div class="portfolio-caption">
-                                        <div class="portfolio-caption-heading">{{$producto->name}}</div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <!-- Creando los cuadros modales de cada prodcto -->
@@ -71,6 +76,7 @@
                                                                     aria-label="Slide {{$index + 1}}"></button>
                                                                 @endforeach
                                                             </div>
+                                                            
                                                             <div class="carousel-inner">
                                                                 <!-- Imagen principal -->
                                                                 <div class="carousel-item active w-100">
@@ -79,11 +85,17 @@
                                                                         <button class="btn btn-outline-secondary fa-solid fa-print mt-3" onclick="imprimir('{{addslashes(json_encode($producto,JSON_UNESCAPED_UNICODE))}}', 'mi_imagen{{$key}}', '{{addslashes(json_encode($producto->items,JSON_UNESCAPED_UNICODE))}}', '{{$producto->categoriaName}}')">
                                                                         <button class="btn btn-outline-secondary fa-solid fa-download mt-3" onclick="download('{{asset("storage/$producto->id/$producto->image")}}','{{$producto->image}}', '{{$producto->name}}', 0)">
                                                                     </div>   
-                                                                    <!-- Imagen -->                                                    
+                                                                    <!-- Imagen -->   
+                                                                    
+                                                                    @if($producto->image!=null)
+                                                                                                
                                                                     <img id="mi_imagen{{$key}}" class="center-block w-40"
                                                                         src='{{asset("storage/$producto->id/mini_$producto->image")}}'
                                                                         alt="{{$producto->image}}" height="500" 
                                                                         loading="lazy"/>
+                                                                        @else
+                                                                            <i class="fa-solid fa-question" style="height: 500px; margin-bottom: 32px"></i>
+                                                                        @endif
                                                                 </div>
 
                                                                 <!-- Imagenes secundarias -->
@@ -101,14 +113,17 @@
                                                                             <button class="btn btn-outline-secondary fa-solid fa-download mt-3" onclick="download('{{ asset("storage/$producto->id/$image->image")}}' , '{{$image->image}}', '{{$producto->name}}', {{$contador}})">
                                                                         </div>
                                                                         <!-- Imagen -->
+                                                                       
                                                                         <img id="img_secundaria_{{$producto->id}}_{{$contador}}"
                                                                             src='{{asset("storage/$producto->id/mini_$image->image")}}'
                                                                             class="center-block" height="500"
                                                                             alt="{{$image->image}}"
                                                                             loading="lazy">
+                                                                        
                                                                     </div>
                                                                 @endforeach
                                                             </div>
+                                                            
                                                             <button class="carousel-control-prev" type="button"
                                                                 data-bs-target="#carouselExampleIndicators{{$key}}"
                                                                 data-bs-slide="prev">
@@ -124,7 +139,6 @@
                                                                 <span class="visually-hidden">Next</span>
                                                             </button>
                                                         </div>
-
                                                         <div class='items' style="padding-left: 25%; padding-right: 20%; text-align: left">
                                                             @foreach ($producto->items as $item)
                                                                 <strong>{!! $item->name !!}:</strong>
