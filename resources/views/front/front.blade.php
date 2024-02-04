@@ -32,14 +32,14 @@
                             <div class="portfolio-item">
                                 <a class="portfolio-link" href="/categoria/{{ $producto->categoria->id }}">
                                     <div class="portfolio-hover">
-                                        <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                        <div class="portfolio-hover-content"><i class="fa-solid fa-arrow-up-right-from-square fa-3x"></i></div>
                                     </div>
                                     <img class="img-fluid" src="/storage/{{ $producto->id }}/mini_{{ $producto->image }}"
                                         alt="..." />
-                                </a>
-                                <div class="portfolio-caption">
-                                    <div class="portfolio-caption-heading">{{ $producto->categoria->name }}</div>
-                                </div>
+                                        <div class="portfolio-caption">
+                                            <div class="portfolio-caption-heading">{{ $producto->categoria->name }}</div>
+                                        </div>
+                                    </a>
                             </div>
                         </div>
                     @endforeach
