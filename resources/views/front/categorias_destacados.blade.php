@@ -5,7 +5,7 @@
 
 
     <div id="page-top" class="content-wrapper">
-        <section class="page-section" id="portfolio"
+        <section class="page-section mt-3" id="portfolio"
             >
             <div class="" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
@@ -19,8 +19,7 @@
                     <!-- html_entity_decode hace que values como &nbsp; se muestre como tabulación y no se imprima -->
                     @foreach($valores as $key => $valor)
                     @php
-                        $valorDecoded = html_entity_decode(strip_tags($valor->value));
-                        $valorItem = $valorDecoded == "" ? "Sin Categorizar" : $valorDecoded;
+                        $valorItem = $valor->value;
                     @endphp
                     <div class="gridItem">
                         <div class="portfolio-item">

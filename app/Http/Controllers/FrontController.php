@@ -101,7 +101,7 @@ class FrontController extends Controller
             $todosProductos = Productos::recuperarPorCategoria($idCategoria);
             $opciones = Opciones::convertToArray();
             if(empty($todosProductos->items())){
-                $msg = 'No existen resultados de búsqueda';
+                $msg = 'No existen resultados para el valor de campo especificado';
             };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'opciones' => $opciones]);    
@@ -113,7 +113,7 @@ class FrontController extends Controller
             $todosProductos = Productos::recuperarPorCategoriaDestacado($idCategoria, $idItem, $valueItem);
             $opciones = Opciones::convertToArray();
             if(empty($todosProductos->items())){
-                $msg = 'No existen resultados de búsqueda';
+                $msg = 'No existen resultados para el valor de campo especificado';
             };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'opciones' => $opciones]);    
