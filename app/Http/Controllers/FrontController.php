@@ -69,7 +69,9 @@ class FrontController extends Controller
             $categoriasList = Categorias::orderBy('order')->get();
             $todosProductos = blank($r->textoBusqueda) ? Productos::recuperarPorCategoria($id) : Productos::buscador($data);
             $opciones = Opciones::convertToArray();
-            if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+            if(empty($todosProductos->items())){
+                $msg = 'No existen resultados de búsqueda';
+            };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'textoBusqueda' => $r->textoBusqueda, 'opciones' => $opciones]);    
         }
@@ -98,7 +100,9 @@ class FrontController extends Controller
             $categoriasList = Categorias::orderBy('order')->get();
             $todosProductos = Productos::recuperarPorCategoria($idCategoria);
             $opciones = Opciones::convertToArray();
-            if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+            if(empty($todosProductos->items())){
+                $msg = 'No existen resultados de búsqueda';
+            };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'opciones' => $opciones]);    
         } 
@@ -108,7 +112,9 @@ class FrontController extends Controller
             $categoriasList = Categorias::orderBy('order')->get();
             $todosProductos = Productos::recuperarPorCategoriaDestacado($idCategoria, $idItem, $valueItem);
             $opciones = Opciones::convertToArray();
-            if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+            if(empty($todosProductos->items())){
+                $msg = 'No existen resultados de búsqueda';
+            };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'opciones' => $opciones]);    
         }
@@ -126,7 +132,9 @@ class FrontController extends Controller
         $categoriasList = Categorias::orderBy('order')->get();
         $todosProductos = blank($r->textoBusqueda) ? Productos::recuperarPorCategoria($id) : Productos::buscador($data);
         $opciones = Opciones::convertToArray();
-        if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+        if(empty($todosProductos->items())){
+            $msg = 'No existen resultados de búsqueda';
+        };
         return view('front.piezas_categorias', ['productosList'=>$productosList, 'categoriasList'=>$categoriasList, 'opciones' => $opciones, 
                     'msg'=> $msg??"",'textoBusqueda'=> $r->textoBusqueda, 'todosProductos'=>$todosProductos,
                     'categoriasList'=>$categoriasList, 'idCategoria' => $r->idCategoria, 'categoria' => $categoria]);
@@ -148,9 +156,9 @@ class FrontController extends Controller
         $todosProductos =  Productos::buscador($data);
         $opciones = Opciones::convertToArray();
     
-        if ($todosProductos===null){
-            $msg = 'No hay resultados de búsqueda';    
-        } 
+        if (empty($todosProductos->items())) {
+            $msg = 'No existen resultados de búsqueda';   
+        }  
         return view('front.piezas_categorias', 
         [
             'textoBusqueda'=> $r->textoBusqueda,
@@ -172,9 +180,9 @@ class FrontController extends Controller
         $categoriasList = Categorias::orderBy('order')->get();
         $opciones = Opciones::convertToArray();
         $todosProductos = Productos::buscador($data);
-
-        if ($todosProductos===null) {
-            $msg = 'No hay resultados de búsqueda';   
+        
+        if (empty($todosProductos->items())) {
+            $msg = 'No existen resultados de búsqueda';   
         }        
 
         return view('front.piezas_categorias', ['categoria_id' => $r->categoria_id,'msg'=>$msg??"", 'items' => $r->items,'opciones' => $opciones, 'todosProductos'=>$todosProductos, 'categoriasList'=>$categoriasList]);

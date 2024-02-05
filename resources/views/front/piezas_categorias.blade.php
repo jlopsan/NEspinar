@@ -8,8 +8,9 @@
                 <div class="grid">
                     
                     @if (isset($msg) && !blank($msg))
-                    <div class="text-center">
-                        {{$msg}}
+                    <div class="error">
+                        <div><i class="fa fa-circle-question"></i></div>
+                        <div>{{$msg}}</div>
                     </div>
                     @endif
                     <!-- Pintando las cajas de los productos -->
