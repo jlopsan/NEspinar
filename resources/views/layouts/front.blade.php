@@ -28,7 +28,6 @@
     <!-- Menu-->
     @yield('content')
 
-
     @if (isset($home))
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav"
         style="--color_nav: {{ $opciones['color_nav'] }}; --tipografia1: {{$opciones['tipografia1']}}">
@@ -125,7 +124,7 @@
             @if((Route::current()->getName() != 'home') && (Route::current()->getName() != 'vistaBuscador'))
             <!-- Buscador -->
             @if(isset($categoria))
-                <div class="p-1 searchParent" style="font-family: {{$opciones['tipografia1']}}">
+                <div class="p-1 searchParent" style="font-family: {{$opciones['tipografia1']}};">
                     <form action="{{route('productoPorCategoria', [$categoria->id ?? ''])}}" action="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" id="texto" name="textoBusqueda"
@@ -169,8 +168,7 @@
         }
 
         .main-wrapper {
-            min-height: 100vh;
-            padding-bottom: 3em;
+            padding-bottom: 1em;
         }
     
         .footer {

@@ -1,10 +1,10 @@
 @extends('layouts.front')
 @section('content')
 <div id="page-top">
-        <section class="page-section mt-5" id="portfolio"
+        <section class="page-section mt-3" id="portfolio"
             style="--paginacion: {{ $opciones['paginacion_color'] }}; ">
 
-            <div class="" style="font-family: {{$opciones['tipografia3']}}">
+            <div class="content-wrapper" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
                     
                     @if (isset($msg) && !blank($msg))
@@ -201,7 +201,9 @@
                     </form>
                     @else
                         @if ($todosProductos!=null)
+                        <div class="paginacion">
                             {{$todosProductos->links()}}
+                        </div>
                         @endif
                     @endif
                 </div>

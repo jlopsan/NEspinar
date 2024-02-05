@@ -25,7 +25,7 @@
         <section class="page-section bg-light" id="portfolio"
             style="background-color: {{ $opciones['color_fondo'] }} !IMPORTANT; --tipografia1: {{ $opciones['tipografia1'] }}; --tipografia3: {{ $opciones['tipografia3'] }}">
             <div class="container">
-                <div class="Ticatego">COLECCIONES</div>
+                <div class="Ticatego" style="margin-bottom: 2em">COLECCIONES</div>
                 <div class="grid">
                     @foreach ($productosList as $producto)
                         <div class="gridItem">
@@ -48,9 +48,9 @@
     </div>
     </section>
 
-    <section class="page-section bg-light" id="team"
+    <section class="page-section bg-light info-adicional" id="team"
         style="background-color: {{ $opciones['color_fondo'] }} !IMPORTANT; --tipografia1: {{ $opciones['tipografia1'] }}">
-        <div class="container">
+        <div class="container info-adicional">
             @if ($opciones['home_info_adicional'])
                 <div class="Ticatego">{!! $opciones['home_info_adicional_titulo'] !!}</div>
                 <div class="d-flex justify-content-center align-items-center">

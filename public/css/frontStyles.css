@@ -1,9 +1,29 @@
+.content-wrapper {
+    padding: 0em 5em 10em 5em;
+}
+
+.info-adicional {
+  padding-bottom: 8em;
+}
+
+.masthead {
+  width: 100%;
+}
+
+.page-section {
+  padding-top: 8em;
+  padding-bottom: 0;
+}
+
+.paginacion {
+  padding: 5em 0 0 0;
+}
+
 .grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
   gap: 7.5em;
   row-gap: 4em;
-  padding: 4em;
   margin-top: 1em;
 }
 
@@ -80,8 +100,18 @@
   display:none !important;
 }
 
-/*
-CLASES AÑADIDAS POSTERIORMENTE 
-*/
+@media (max-width: 500px) {
 
-.img
+  .content-wrapper {
+    padding: 3em 0 18em 0;
+  }
+
+  .info-adicional {
+    padding-bottom: 8em;
+  }
+
+  .paginacion {
+    padding: 4em 0 1em 0;
+  }
+
+}
