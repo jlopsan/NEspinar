@@ -21,7 +21,7 @@
 </head>
 
 <body style="background-color: {{ $opciones['color_fondo'] }}!IMPORTANT;">
-    <div class="wrapper">
+<div class="main-wrapper">
 
     <div id="container" >
 
@@ -163,17 +163,22 @@
 
     <!-- Footer-->
     <style>
+
+        body {
+            position: relative;
+        }
+
         .main-wrapper {
             min-height: 100vh;
-            position: relative;
+            padding-bottom: 3em;
         }
     
         .footer {
+            position: absolute;
+            bottom: 0;
             padding: 20px;
             text-align: center;
             width: 100%;
-            position: sticky;
-            bottom: 0;
             background-color: {{ $opciones['color_nav'] }};
         }
 
