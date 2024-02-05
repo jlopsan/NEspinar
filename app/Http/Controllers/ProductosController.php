@@ -133,6 +133,7 @@ class ProductosController extends Controller
         if(!blank($r->file('image'))){  
             $deleteImage = $p->image;   //** Si hay nueva imgaen principal borrar antigüa y guarda la nueva
             Storage::delete("public/" . $id . "/" . $deleteImage);
+            Storage::delete("public/" . $id . "/mini_" . $deleteImage);
 
             $image = $r->file('image');
             self::saveImage($image, $p->id);
@@ -201,6 +202,9 @@ class ProductosController extends Controller
 
     public function buscadorProductos(Request $r) {
         $categorias = Categorias::all();
+        if($r->textoBusqueda == trim('')) {
+            return self::index();
+        } 
         $productosList = Productos::busquedaProductos($r->idCategoria, $r->textoBusqueda);
         return view('productos.all', ['textoBusqueda'=> $r->textoBusqueda, 'productosList'=>$productosList, 'categorias'=>$categorias, 'idCategoria' => $r->idCategoria]);
     }

@@ -1,18 +1,71 @@
+.content-wrapper {
+    padding: 0em 5em 10em 5em;
+}
+
+.info-adicional {
+  padding-bottom: 8em;
+}
+
+.masthead {
+  width: 100%;
+}
+
+.page-section {
+  padding-top: 8em;
+  padding-bottom: 0;
+}
+
+.paginacion {
+  padding: 5em 0 0 0;
+}
+
 .grid{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
   gap: 7.5em;
   row-gap: 4em;
-  padding: 2em;
+  margin-top: 1em;
+}
+
+.gridItem { 
+  position: relative;
+  justify-self: center;
+  align-self: center;
+}
+
+.gridItem .portfolio-item {
+  border-radius: 3px;
+  background-color: #fff;
 }
 
 .gridItem .portfolio-link{
   display: flex!important;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  min-height: 130px;
+  max-width: 80vw;
+  width: 350px;
+  background-color: transparent !important;
+}
+
+.gridItem .portfolio-hover {
+  border-radius: 3px;
 }
 
 .gridItem .portfolio-link img{
-  max-height: 215px;
+  border-radius: 3px;
+  width: 350px;
+  height: 275px;
+  object-fit: cover;
+}
+
+.gridItem .portfolio-caption {
+  background-color: transparent !important;
+}
+
+.gridItem .portfolio-caption-heading {
+  font-size: 1.3rem !important;
 }
 
 .searchParent{
@@ -45,4 +98,20 @@
 
 .carousel-dark .carousel-control-prev-icon, .carousel-dark .carousel-control-next-icon{
   display:none !important;
+}
+
+@media (max-width: 500px) {
+
+  .content-wrapper {
+    padding: 3em 0 18em 0;
+  }
+
+  .info-adicional {
+    padding-bottom: 8em;
+  }
+
+  .paginacion {
+    padding: 4em 0 1em 0;
+  }
+
 }

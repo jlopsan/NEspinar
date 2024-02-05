@@ -25,21 +25,21 @@
         <section class="page-section bg-light" id="portfolio"
             style="background-color: {{ $opciones['color_fondo'] }} !IMPORTANT; --tipografia1: {{ $opciones['tipografia1'] }}; --tipografia3: {{ $opciones['tipografia3'] }}">
             <div class="container">
-                <div class="Ticatego">COLECCIONES</div>
+                <div class="Ticatego" style="margin-bottom: 2em">COLECCIONES</div>
                 <div class="grid">
                     @foreach ($productosList as $producto)
                         <div class="gridItem">
                             <div class="portfolio-item">
                                 <a class="portfolio-link" href="/categoria/{{ $producto->categoria->id }}">
                                     <div class="portfolio-hover">
-                                        <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                        <div class="portfolio-hover-content"><i class="fa-solid fa-arrow-up-right-from-square fa-3x"></i></div>
                                     </div>
                                     <img class="img-fluid" src="/storage/{{ $producto->id }}/mini_{{ $producto->image }}"
                                         alt="..." />
-                                </a>
-                                <div class="portfolio-caption">
-                                    <div class="portfolio-caption-heading">{{ $producto->categoria->name }}</div>
-                                </div>
+                                        <div class="portfolio-caption">
+                                            <div class="portfolio-caption-heading">{{ $producto->categoria->name }}</div>
+                                        </div>
+                                    </a>
                             </div>
                         </div>
                     @endforeach
@@ -48,9 +48,9 @@
     </div>
     </section>
 
-    <section class="page-section bg-light" id="team"
+    <section class="page-section bg-light info-adicional" id="team"
         style="background-color: {{ $opciones['color_fondo'] }} !IMPORTANT; --tipografia1: {{ $opciones['tipografia1'] }}">
-        <div class="container">
+        <div class="container info-adicional">
             @if ($opciones['home_info_adicional'])
                 <div class="Ticatego">{!! $opciones['home_info_adicional_titulo'] !!}</div>
                 <div class="d-flex justify-content-center align-items-center">

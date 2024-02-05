@@ -21,13 +21,12 @@
 </head>
 
 <body style="background-color: {{ $opciones['color_fondo'] }}!IMPORTANT;">
-    <div class="wrapper">
+<div class="main-wrapper">
 
     <div id="container" >
 
     <!-- Menu-->
     @yield('content')
-
 
     @if (isset($home))
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav"
@@ -125,7 +124,7 @@
             @if((Route::current()->getName() != 'home') && (Route::current()->getName() != 'vistaBuscador'))
             <!-- Buscador -->
             @if(isset($categoria))
-                <div class="p-1 searchParent" style="font-family: {{$opciones['tipografia1']}}">
+                <div class="p-1 searchParent" style="font-family: {{$opciones['tipografia1']}};">
                     <form action="{{route('productoPorCategoria', [$categoria->id ?? ''])}}" action="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" id="texto" name="textoBusqueda"
@@ -150,7 +149,7 @@
             <div class="row align-items-center" style="font-family: {{$opciones['tipografia1']}}">
                 <div class="col-lg-4 text-lg-start"><b>Si estás interesado en exponer tu arte online contáctanos: <br>  <div class="colores" style="color: blue">juan.baronviciana@gmail.com - josemanuelgallurt24@gmail.com</b></div></div>
                 <div class="col-lg-4 my-3 my-lg-0">
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="/storage/images/creative_commons.png" /></a>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <a class="link-dark text-decoration-none me-3" href="{{route('politica_privacidad')}}">Politíca de Privacidad</a>
@@ -163,17 +162,21 @@
 
     <!-- Footer-->
     <style>
-        .main-wrapper {
-            min-height: 100vh;
+
+        body {
             position: relative;
+        }
+
+        .main-wrapper {
+            padding-bottom: 1em;
         }
     
         .footer {
+            position: absolute;
+            bottom: 0;
             padding: 20px;
             text-align: center;
             width: 100%;
-            position: sticky;
-            bottom: 0;
             background-color: {{ $opciones['color_nav'] }};
         }
 

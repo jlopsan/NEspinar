@@ -4,7 +4,7 @@
 @section('content')
 
 
-    <div id="page-top">
+    <div id="page-top" class="content-wrapper">
         <section class="page-section" id="portfolio"
             >
             <div class="" style="font-family: {{$opciones['tipografia3']}}">
