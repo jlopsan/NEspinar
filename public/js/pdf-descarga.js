@@ -12,16 +12,12 @@
         // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
         function imprimir(json_product, image_id, json_items, category, opciones) {
     
-        
-        
             // Convertimos los JSON a objetos
             var product = JSON.parse(json_product);
-      
             var items = JSON.parse(json_items);
-
             var opcionesJS = JSON.parse(opciones);
 
-            console.log(opcionesJS);
+            
             
              
     
@@ -82,19 +78,20 @@
                 doc.text(`${PMitad} -`,xPMitad,82);
     
                 let longMitad2 = doc.getStringUnitWidth(SMitad) * doc.internal.getFontSize();
-                xSMitad = ((anchuraDoc/2)-(longMitad2/2));
+                let xSMitad = ((anchuraDoc/2)-(longMitad2/2));
                 doc.text(`${SMitad}`,xSMitad,82+interlineado);
             };
             //SUBTITULO--------------------------------------------------------------------------------------------------------------------------------
             doc.setFontSize(18);
-            var longItem = doc.getStringUnitWidth(`${items[0].pivot.value}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
+            var longItem = doc.getStringUnitWidth(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
             var xitem = ((anchuraDoc/2)-(longItem/2));
+          
     
             if(doc.getTextDimensions(`${items[0].pivot.value}`).w < anchuraDoc){
-                doc.text(`${items[0].pivot.value.replace(/\./g, '')}`,xitem,135);
+                doc.text(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,xitem,135);
             }
             else{
-                var subtitulo = items[0].pivot.value.replace(/\./g, '');
+                var subtitulo = items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '');
                 var tamañoSub = subtitulo.length;
                 let pmitadSub = subtitulo.substring(0,tamañoSub/2);
                 let smitadSub = subtitulo.substring(tamañoSub/2);
@@ -113,36 +110,20 @@
     
              var imagen = new Image();
              imagen.src = document.getElementById(image_id).src;
-             var anchoOriginal= imagen.naturalWidth;
-             var anchoOriginalPT= anchoOriginal/1.3;
-             var alturaOriginal = imagen.naturalHeight;
-             var alturaOriginalPT = alturaOriginal/1.3
-             var anchuraDeseada = 320;
+
+             var anchoOriginalPT= imagen.naturalWidth/1.3;
+             var alturaOriginalPT = imagen.naturalHeight/1.3;
              var ratio = anchoOriginalPT/alturaOriginalPT;
+             var anchuraDeseada = 320;
              var alturaDeseada = anchuraDeseada/ratio;
-            
-             xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
-             /*
-             console.log("ancho Original Foto: ");
-             console.log(anchoOriginal);
-             console.log("Ancho original Puntos: ");
-             console.log(anchoOriginalPT);
-             console.log("---------------------------");
-             console.log("Altura Original");
-             console.log(alturaOriginal);
-             console.log("Altura original PT");
-             console.log(alturaOriginalPT);
-             console.log("-----------------------");
-             console.log("anchura deseada");
-             console.log(anchuraDeseada);
-             console.log("Ratio");
-             console.log(ratio);
-             console.log("----------------");
-             console.log("Altura deseada");
-             console.log( alturaDeseada);
-            */
+             var xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
+
              doc.addImage(imagen,"JPG",xImagen,180,anchuraDeseada,alturaDeseada);
-    
+
+             console.log(imagen);
+             console.log(xImagen);
+             console.log(anchuraDeseada);
+             console.log(alturaDeseada);
              // CAMPOS----------------------------------------------------------------------------------------------
             doc.setFontSize(12)
             doc.setFont(fontName);
