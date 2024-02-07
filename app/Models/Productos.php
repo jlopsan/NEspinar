@@ -93,6 +93,7 @@ class Productos extends Model
     /* Si el idCategoria es NULL, busca en todas las categorias*/
     public static function busquedaProductos($idCategoria, $textoBusquedaOG)
     {
+        $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
         $resultadoBusqueda = collect();  // Creamos colección vacía para ir añadiendo los resultados de las búsquedas
         if ($textoBusquedaOG == "" && $idCategoria != NULL) {
             // CASO 1: No hay texto de búsqueda, pero sí hay categoría --> Buscamos todos los productos de la categoría
@@ -115,8 +116,9 @@ class Productos extends Model
                 
             }
         }
+        dd($elementosPorPagina);
         // Paginamos el resultado
-        $resultadoPaginado = new LengthAwarePaginator($resultadoBusqueda, count($resultadoBusqueda), 9);
+        $resultadoPaginado = new LengthAwarePaginator($resultadoBusqueda, count($resultadoBusqueda), $elementosPorPagina);
         $resultadoPaginado->appends(['textoBusqueda' => $textoBusquedaOG]);
         if ($idCategoria != NULL) $resultadoPaginado->appends(['idCategoria' => $idCategoria]);
         return $resultadoPaginado;
@@ -172,6 +174,8 @@ class Productos extends Model
         //busqueda por categoria $idCategoria!=null
         //busqueda general $txt!=null
 
+        $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
+
         $txt = $data['txt'] ?? null;
         $idCategoria = $data['idCategoria'] ?? null;
         $items = $data['items'] ?? null;
@@ -217,7 +221,7 @@ class Productos extends Model
                 })
                 ->groupBy('prod1.id', 'prod1.name', 'prod1.image', 'categorias.name');
 
-                $results = $results->distinct()->paginate(9);
+                $results = $results->distinct()->paginate($elementosPorPagina);
 
 
                 if (!empty($page)) {
@@ -248,7 +252,7 @@ class Productos extends Model
                     })
                     ->groupBy('productos.id', 'productos.name', 'productos.image', 'categorias.name')
                     ->distinct()
-                    ->paginate(9);
+                    ->paginate($elementosPorPagina);
 
                     if (!empty($page)) {
                         $results->setPageName('page')->appends(['page' => $page]);
@@ -276,7 +280,7 @@ class Productos extends Model
                     })
                     ->groupBy('productos.id', 'productos.name', 'productos.image', 'categorias.name')
                     ->distinct()
-                    ->paginate(9);
+                    ->paginate($elementosPorPagina);
             
                 if (!empty($page)) {
                     $results->setPageName('page')->appends(['page' => $page]);
