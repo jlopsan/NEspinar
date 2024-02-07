@@ -4,6 +4,9 @@
     // QUe se puedan elegir diferentes tamaños de las fotos (Con un modal)
     // Que se pueda escoger el titulo por campo;
     // https://rawgit.com/MrRio/jsPDF/master/docs/index.html
+
+const { conforms } = require("lodash");
+
     
         window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
     
@@ -12,30 +15,26 @@
         // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
         function imprimir(json_product, image_id, json_items, category, opciones) {
     
-        
-        
             // Convertimos los JSON a objetos
-            var product = JSON.parse(json_product);
-      
-            var items = JSON.parse(json_items);
+            let product = JSON.parse(json_product);
+            let items = JSON.parse(json_items);
+            let opcionesJS = JSON.parse(opciones);
 
-            var opcionesJS = JSON.parse(opciones);
-
-            console.log(opcionesJS);
+            
             
              
     
             // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
-            var doc = new jsPDF('portrait', 'pt', 'a4');
-            var fontName = "Prata-Regular";
-            var fontNameTitulos= "Cinzel-VariableFont_wght";
+            let doc = new jsPDF('portrait', 'pt', 'a4');
+            let fontName = "Prata-Regular";
+            let fontNameTitulos= "Cinzel-VariableFont_wght";
             doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
             doc.addFont('/fonts/'+fontNameTitulos+'.ttf', fontNameTitulos, 'normal');
-            var margenDerecho= 30;
-            var margenIzquierdo= 30; 
-            var margenTop= 30;
-            var margenBot=30;
-            var interlineado=30; 
+            let margenDerecho= 30;
+            let margenIzquierdo= 30; 
+            let margenTop= 30;
+            let margenBot=30;
+            let interlineado=30; 
             const anchuraDoc = doc.internal.pageSize.getWidth();
             const alturaDoc = doc.internal.pageSize.getHeight();
           
@@ -54,9 +53,9 @@
             doc.setFont(fontName);
             doc.setFontSize(9);
             doc.text(opcionesJS.home_titulo,35,33);
-            var longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+            let longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
             let margenBanner = 25; 
-            var posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
+            let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
             doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
             doc.line(0, 42.51, 595.14, 42.51);
     
@@ -64,8 +63,8 @@
              // TITULO DEL PRODUCTO---------------------------------------------------------------------------------
             doc.setFont(fontNameTitulos);
             doc.setFontSize(30);
-            var longitudProductName= doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
-            var xProdName= ((anchuraDoc/2)-(longitudProductName/2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
+            let longitudProductName= doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
+            let xProdName= ((anchuraDoc/2)-(longitudProductName/2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
       
     
             if(doc.getTextDimensions(`${product.name}`).w < anchuraDoc){
@@ -82,20 +81,21 @@
                 doc.text(`${PMitad} -`,xPMitad,82);
     
                 let longMitad2 = doc.getStringUnitWidth(SMitad) * doc.internal.getFontSize();
-                xSMitad = ((anchuraDoc/2)-(longMitad2/2));
+                let xSMitad = ((anchuraDoc/2)-(longMitad2/2));
                 doc.text(`${SMitad}`,xSMitad,82+interlineado);
             };
             //SUBTITULO--------------------------------------------------------------------------------------------------------------------------------
             doc.setFontSize(18);
-            var longItem = doc.getStringUnitWidth(`${items[0].pivot.value}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
-            var xitem = ((anchuraDoc/2)-(longItem/2));
+            let longItem = doc.getStringUnitWidth(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
+            let xitem = ((anchuraDoc/2)-(longItem/2));
+          
     
             if(doc.getTextDimensions(`${items[0].pivot.value}`).w < anchuraDoc){
-                doc.text(`${items[0].pivot.value.replace(/\./g, '')}`,xitem,135);
+                doc.text(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,xitem,135);
             }
             else{
-                var subtitulo = items[0].pivot.value.replace(/\./g, '');
-                var tamañoSub = subtitulo.length;
+                let subtitulo = items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '');
+                let tamañoSub = subtitulo.length;
                 let pmitadSub = subtitulo.substring(0,tamañoSub/2);
                 let smitadSub = subtitulo.substring(tamañoSub/2);
     
@@ -109,50 +109,80 @@
             }
            
     
-             // FOTOGRAFIAS-----------------------------------------------------------------------------------------
-    
-             var imagen = new Image();
-             imagen.src = document.getElementById(image_id).src;
-             var anchoOriginal= imagen.naturalWidth;
-             var anchoOriginalPT= anchoOriginal/1.3;
-             var alturaOriginal = imagen.naturalHeight;
-             var alturaOriginalPT = alturaOriginal/1.3
-             var anchuraDeseada = 320;
-             var ratio = anchoOriginalPT/alturaOriginalPT;
-             var alturaDeseada = anchuraDeseada/ratio;
-            
-             xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
-             /*
-             console.log("ancho Original Foto: ");
-             console.log(anchoOriginal);
-             console.log("Ancho original Puntos: ");
-             console.log(anchoOriginalPT);
-             console.log("---------------------------");
-             console.log("Altura Original");
-             console.log(alturaOriginal);
-             console.log("Altura original PT");
-             console.log(alturaOriginalPT);
-             console.log("-----------------------");
-             console.log("anchura deseada");
-             console.log(anchuraDeseada);
-             console.log("Ratio");
-             console.log(ratio);
-             console.log("----------------");
-             console.log("Altura deseada");
-             console.log( alturaDeseada);
-            */
+             // FOTOGRAFIAS----------------------------------------------------------------------------------------
+             let imagen = document.getElementById(image_id);
+
+             let anchoOriginalPT= imagen.naturalWidth/1.3;
+             let alturaOriginalPT = imagen.naturalHeight/1.3;
+             let ratio = anchoOriginalPT/alturaOriginalPT;
+
+            if (anchoOriginalPT>alturaOriginalPT){
+             let anchuraDeseada = 320;
+             let alturaDeseada = anchuraDeseada/ratio;
+             let xImagen = ((anchuraDoc/2)-(anchuraDeseada/2));
              doc.addImage(imagen,"JPG",xImagen,180,anchuraDeseada,alturaDeseada);
-    
-             // CAMPOS----------------------------------------------------------------------------------------------
-            doc.setFontSize(12)
-            doc.setFont(fontName);
-            for (var i = 0; i < items.length; i++){
-            
-                let cordenada = 270+i*28
-                doc.text(`${items[i].name} :`, 56.68,cordenada)
-    
+                
+             doc.setFontSize(12)
+             doc.setFont(fontName);
+             for (var i = 0; i < items.length; i++){
+
+                let cordenada = alturaDeseada+180+interlineado+i*interlineado;
+
+                if (cordenada+interlineado< alturaDoc){
+                    doc.text(`${items[i].name} :`, 56.68,cordenada)
+                }else{
+                    doc.addPage();
+                    doc.setFont(fontName);
+                    doc.setFontSize(9);
+                    doc.text(opcionesJS.home_titulo,35,33);
+                    let longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                    let margenBanner = 25; 
+                    let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
+                    doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
+                    doc.line(0, 42.51, 595.14, 42.51);
+
+                    cordenada = 0;
+
+                   
+                }
+             }
+
             }
-          
+
+            if (anchoOriginalPT<alturaOriginalPT){
+                let alturaDeseada = 400;
+                let anchuraDeseada= alturaDeseada*ratio;
+                let xImagen = ((anchuraDoc/2)-(anchuraDeseada/2));
+                doc.addImage(imagen,"JPG",xImagen,180,anchuraDeseada,alturaDeseada);
+
+                doc.setFontSize(12)
+                doc.setFont(fontName);
+
+                let cordenada = alturaDeseada+180+interlineado*2;
+
+                for (var i = 0; i < items.length; i++){
+
+                    if (cordenada+interlineado< alturaDoc){
+                        doc.text(`${items[i].name} :`, 56.68,cordenada);
+                        let ysiguiente = cordenada+ interlineado;
+                        doc.text(`${items[i].pivot.value}`,56.68,ysiguiente); 
+                    }else{
+                        doc.addPage();
+
+                        doc.setFont(fontName);
+                        doc.setFontSize(9);
+                        doc.text(opcionesJS.home_titulo,35,33);
+                        let longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                        let margenBanner = 25; 
+                        let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
+                        doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
+                        doc.line(0, 42.51, 595.14, 42.51);
+                    }
+                }
+            }
+
+             // CAMPOS----------------------------------------------------------------------------------------------
+      
     
             doc.save("pdf.pdf")
     
