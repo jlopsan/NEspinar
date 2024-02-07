@@ -4,6 +4,9 @@
     // QUe se puedan elegir diferentes tamaños de las fotos (Con un modal)
     // Que se pueda escoger el titulo por campo;
     // https://rawgit.com/MrRio/jsPDF/master/docs/index.html
+
+const { conforms } = require("lodash");
+
     
         window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
     
@@ -106,39 +109,80 @@
             }
            
     
-             // FOTOGRAFIAS-----------------------------------------------------------------------------------------
-    
-             
+             // FOTOGRAFIAS----------------------------------------------------------------------------------------
              let imagen = document.getElementById(image_id);
 
              let anchoOriginalPT= imagen.naturalWidth/1.3;
              let alturaOriginalPT = imagen.naturalHeight/1.3;
              let ratio = anchoOriginalPT/alturaOriginalPT;
+
+            if (anchoOriginalPT>alturaOriginalPT){
              let anchuraDeseada = 320;
              let alturaDeseada = anchuraDeseada/ratio;
-             let xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
-
-
-             //console.log(imagen)
-            
-         
-
-             console.log( ratio);
-             
-         
+             let xImagen = ((anchuraDoc/2)-(anchuraDeseada/2));
              doc.addImage(imagen,"JPG",xImagen,180,anchuraDeseada,alturaDeseada);
+                
+             doc.setFontSize(12)
+             doc.setFont(fontName);
+             for (var i = 0; i < items.length; i++){
 
-          
-             // CAMPOS----------------------------------------------------------------------------------------------
-            doc.setFontSize(12)
-            doc.setFont(fontName);
-            for (var i = 0; i < items.length; i++){
-            
-                let cordenada = 270+i*28
-                doc.text(`${items[i].name} :`, 56.68,cordenada)
-    
+                let cordenada = alturaDeseada+180+interlineado+i*interlineado;
+
+                if (cordenada+interlineado< alturaDoc){
+                    doc.text(`${items[i].name} :`, 56.68,cordenada)
+                }else{
+                    doc.addPage();
+                    doc.setFont(fontName);
+                    doc.setFontSize(9);
+                    doc.text(opcionesJS.home_titulo,35,33);
+                    let longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                    let margenBanner = 25; 
+                    let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
+                    doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
+                    doc.line(0, 42.51, 595.14, 42.51);
+
+                    cordenada = 0;
+
+                   
+                }
+             }
+
             }
-          
+
+            if (anchoOriginalPT<alturaOriginalPT){
+                let alturaDeseada = 400;
+                let anchuraDeseada= alturaDeseada*ratio;
+                let xImagen = ((anchuraDoc/2)-(anchuraDeseada/2));
+                doc.addImage(imagen,"JPG",xImagen,180,anchuraDeseada,alturaDeseada);
+
+                doc.setFontSize(12)
+                doc.setFont(fontName);
+
+                let cordenada = alturaDeseada+180+interlineado*2;
+
+                for (var i = 0; i < items.length; i++){
+
+                    if (cordenada+interlineado< alturaDoc){
+                        doc.text(`${items[i].name} :`, 56.68,cordenada);
+                        let ysiguiente = cordenada+ interlineado;
+                        doc.text(`${items[i].pivot.value}`,56.68,ysiguiente); 
+                    }else{
+                        doc.addPage();
+
+                        doc.setFont(fontName);
+                        doc.setFontSize(9);
+                        doc.text(opcionesJS.home_titulo,35,33);
+                        let longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                        let margenBanner = 25; 
+                        let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
+                        doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
+                        doc.line(0, 42.51, 595.14, 42.51);
+                    }
+                }
+            }
+
+             // CAMPOS----------------------------------------------------------------------------------------------
+      
     
             doc.save("pdf.pdf")
     
