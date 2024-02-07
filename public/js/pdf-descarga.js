@@ -13,25 +13,25 @@
         function imprimir(json_product, image_id, json_items, category, opciones) {
     
             // Convertimos los JSON a objetos
-            var product = JSON.parse(json_product);
-            var items = JSON.parse(json_items);
-            var opcionesJS = JSON.parse(opciones);
+            let product = JSON.parse(json_product);
+            let items = JSON.parse(json_items);
+            let opcionesJS = JSON.parse(opciones);
 
             
             
              
     
             // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
-            var doc = new jsPDF('portrait', 'pt', 'a4');
-            var fontName = "Prata-Regular";
-            var fontNameTitulos= "Cinzel-VariableFont_wght";
+            let doc = new jsPDF('portrait', 'pt', 'a4');
+            let fontName = "Prata-Regular";
+            let fontNameTitulos= "Cinzel-VariableFont_wght";
             doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
             doc.addFont('/fonts/'+fontNameTitulos+'.ttf', fontNameTitulos, 'normal');
-            var margenDerecho= 30;
-            var margenIzquierdo= 30; 
-            var margenTop= 30;
-            var margenBot=30;
-            var interlineado=30; 
+            let margenDerecho= 30;
+            let margenIzquierdo= 30; 
+            let margenTop= 30;
+            let margenBot=30;
+            let interlineado=30; 
             const anchuraDoc = doc.internal.pageSize.getWidth();
             const alturaDoc = doc.internal.pageSize.getHeight();
           
@@ -50,9 +50,9 @@
             doc.setFont(fontName);
             doc.setFontSize(9);
             doc.text(opcionesJS.home_titulo,35,33);
-            var longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+            let longitudST= doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
             let margenBanner = 25; 
-            var posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
+            let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
             doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
             doc.line(0, 42.51, 595.14, 42.51);
     
@@ -60,8 +60,8 @@
              // TITULO DEL PRODUCTO---------------------------------------------------------------------------------
             doc.setFont(fontNameTitulos);
             doc.setFontSize(30);
-            var longitudProductName= doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
-            var xProdName= ((anchuraDoc/2)-(longitudProductName/2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
+            let longitudProductName= doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
+            let xProdName= ((anchuraDoc/2)-(longitudProductName/2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
       
     
             if(doc.getTextDimensions(`${product.name}`).w < anchuraDoc){
@@ -83,16 +83,16 @@
             };
             //SUBTITULO--------------------------------------------------------------------------------------------------------------------------------
             doc.setFontSize(18);
-            var longItem = doc.getStringUnitWidth(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
-            var xitem = ((anchuraDoc/2)-(longItem/2));
+            let longItem = doc.getStringUnitWidth(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`)* doc.internal.getFontSize(); //Calcula el tamaño del subtitulo
+            let xitem = ((anchuraDoc/2)-(longItem/2));
           
     
             if(doc.getTextDimensions(`${items[0].pivot.value}`).w < anchuraDoc){
                 doc.text(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,xitem,135);
             }
             else{
-                var subtitulo = items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '');
-                var tamañoSub = subtitulo.length;
+                let subtitulo = items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '');
+                let tamañoSub = subtitulo.length;
                 let pmitadSub = subtitulo.substring(0,tamañoSub/2);
                 let smitadSub = subtitulo.substring(tamañoSub/2);
     
@@ -108,22 +108,27 @@
     
              // FOTOGRAFIAS-----------------------------------------------------------------------------------------
     
-             var imagen = new Image();
-             imagen.src = document.getElementById(image_id).src;
+             
+             let imagen = document.getElementById(image_id);
 
-             var anchoOriginalPT= imagen.naturalWidth/1.3;
-             var alturaOriginalPT = imagen.naturalHeight/1.3;
-             var ratio = anchoOriginalPT/alturaOriginalPT;
-             var anchuraDeseada = 320;
-             var alturaDeseada = anchuraDeseada/ratio;
-             var xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
+             let anchoOriginalPT= imagen.naturalWidth/1.3;
+             let alturaOriginalPT = imagen.naturalHeight/1.3;
+             let ratio = anchoOriginalPT/alturaOriginalPT;
+             let anchuraDeseada = 320;
+             let alturaDeseada = anchuraDeseada/ratio;
+             let xImagen = ((anchuraDoc/2)-(anchuraDeseada/2))
 
+
+             //console.log(imagen)
+            
+         
+
+             console.log( ratio);
+             
+         
              doc.addImage(imagen,"JPG",xImagen,180,anchuraDeseada,alturaDeseada);
 
-             console.log(imagen);
-             console.log(xImagen);
-             console.log(anchuraDeseada);
-             console.log(alturaDeseada);
+          
              // CAMPOS----------------------------------------------------------------------------------------------
             doc.setFontSize(12)
             doc.setFont(fontName);
