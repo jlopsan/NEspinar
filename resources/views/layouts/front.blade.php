@@ -15,24 +15,18 @@
     <link href="https://fonts.googleapis.com/css?family={{$opciones['tipografia1']}}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family={{$opciones['tipografia2']}}" rel="stylesheet">
     <!-- Mi fuente-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="/css/frontStyles.css" rel="stylesheet" type="text/css" />
-
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
     @yield('css')
 </head>
 
 <body style="background-color: {{ $opciones['color_fondo'] }}!IMPORTANT;">
-    <div class="wrapper">
+<div class="main-wrapper">
 
     <div id="container" >
 
     <!-- Menu-->
     @yield('content')
-
 
     @if (isset($home))
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav"
@@ -83,7 +77,7 @@
                                 @if(Request::segment(2) == $cat->id)
                                 <li class="nav-item"  style="color:black; width:auto">
                                     <a class="nav-link {{optional($categoria)->id == $cat->id ? 'active' : ''}}"
-                                    href="/categoria/{{$cat->id}}"  style="color:black">
+                                    href="/categoria/{{$cat->id}}" style="color:black">
                                 {{$cat->name}}
                             </a>
                         </li>
@@ -130,7 +124,7 @@
             @if((Route::current()->getName() != 'home') && (Route::current()->getName() != 'vistaBuscador'))
             <!-- Buscador -->
             @if(isset($categoria))
-                <div class="p-1 searchParent" style="font-family: {{$opciones['tipografia1']}}">
+                <div class="p-1 searchParent" style="font-family: {{$opciones['tipografia1']}};">
                     <form action="{{route('productoPorCategoria', [$categoria->id ?? ''])}}" action="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" id="texto" name="textoBusqueda"
@@ -148,84 +142,14 @@
             @endif
         </div>
         </nav>
-        <!-- Fin menu -->
-        <script src="/js/main.js"></script>
-        <!-- Nuestro js-->
-        <script src="/js/frontScripts.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-        </script>
-
-        <style>
-            /* Estilos para el mensaje emergente */
-            #info-message {
-                position: fixed;
-                top: 80px;
-                right: 10px;
-                padding: 5px 10px;
-                background-color: #ffffff;
-                color: #000000;
-                font-size: 12px;
-                z-index: 9999;
-                display: none;
-            }
-        </style>
-
-        <script>
-            // Función para mostrar el mensaje de información durante unos segundos
-            function showInfoMessage() {
-                var message = 'Para buscar coincidencias exactas, puedes utilizar comillas "". Por ejemplo, si buscas "hola pepe 33" entre comillas, el buscador mostrará los objetos que contengan esa combinación de palabras.';
-                var duration = 5000; // Duración en milisegundos (5 segundos)
-
-                // Crear y mostrar el elemento del mensaje
-                var infoMessage = document.createElement('div');
-                infoMessage.id = 'info-message';
-                infoMessage.textContent = message;
-                document.body.appendChild(infoMessage);
-
-                // Mostrar el mensaje
-                infoMessage.style.display = 'block';
-
-                // Ocultar el mensaje después de la duración especificada
-                setTimeout(function () {
-                    infoMessage.style.display = 'none';
-                }, duration);
-            }
-        </script>
-    
-</div>
-    <!-- Footer-->
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-    
-        .wrapper {
-            min-height: 100%;
-            position: relative;
-        }
-    
-        .content {
-            padding-bottom: 60px; /* Altura del footer */
-        }
-    
-        footer {
-            padding: 20px;
-            text-align: center;
-            width: 100%;
-            position: sticky;
-            bottom: 0;
-            background-color: {{ $opciones['color_nav'] }};
-        }
-    </style>
-    
+        <!-- Fin menu -->            
+</div>    
     
         <footer class="footer">
             <div class="row align-items-center" style="font-family: {{$opciones['tipografia1']}}">
                 <div class="col-lg-4 text-lg-start"><b>Si estás interesado en exponer tu arte online contáctanos: <br>  <div class="colores" style="color: blue">juan.baronviciana@gmail.com - josemanuelgallurt24@gmail.com</b></div></div>
                 <div class="col-lg-4 my-3 my-lg-0">
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="/storage/images/creative_commons.png" /></a>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <a class="link-dark text-decoration-none me-3" href="{{route('politica_privacidad')}}">Politíca de Privacidad</a>
@@ -235,8 +159,71 @@
             </div>
         </footer>
     </div>
+
+    <!-- Footer-->
+    <style>
+
+        body {
+            position: relative;
+        }
+
+        .main-wrapper {
+            padding-bottom: 1em;
+        }
     
-   
+        .footer {
+            position: absolute;
+            bottom: 0;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            background-color: {{ $opciones['color_nav'] }};
+        }
+
+        .searchParent {
+            position: relative;
+        }
+
+        #info-message {
+            background-color: #fff;
+            position: absolute;
+            margin-top: 10px;
+            z-index: 9999;
+            padding: 10px;
+            font-size: 1.1rem;
+            border-radius: 3px;
+            border: 1px solid black;
+        }
+
+    </style>
+
+        <script src="/js/main.js"></script>
+        <!-- Nuestro js-->
+        <script src="/js/frontScripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+
+        <script>
+            // Función para mostrar el mensaje de información durante unos segundos
+            function showInfoMessage() {
+                var message = 'Puedes utilizar comillas dobles ("") para buscar coincidencias exactas.';
+                var duration = 5000; // Duración en milisegundos (5 segundos)
+
+                // Crear y mostrar el elemento del mensaje
+                var infoMessage = document.createElement('div');
+                infoMessage.id = 'info-message';
+                infoMessage.textContent = message;
+                var searchParent = document.querySelector('.searchParent');
+                searchParent.appendChild(infoMessage);
+
+                // Ocultar el mensaje después de la duración especificada
+                setTimeout(function () {
+                    infoMessage.style.display = 'none';
+                }, duration);
+            }
+        </script>
+
 </body>
 
 </html>

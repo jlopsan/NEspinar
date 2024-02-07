@@ -18,11 +18,12 @@
         var editor = []; // Array de editores de texto wysiwyg (habrá que crear uno por cada ítem)
     </script>
     @method("PUT")
+
 @else
 <!-- CASO 2: Vamos a hacer insert de un producto nuevo -->
-    <form action="{{ route('productos.store') }}" method="POST" id="formulario" enctype="multipart/form-data">
+    <form action="{{ route('productos.store') }}" method="POST" id="formulario" enctype="multipart/form-data"">
 @endisset
-
+    
         @csrf
         <div class="container-fluid" id="miFormulario">
             Categoria:<select class="form-select" type="text" name="categoria_id" id="categoria_id" onchange="actualizar_items()">
@@ -56,7 +57,7 @@
             </div> <br>
 
             Fotos Adicionales:
-            <input class="form-control" type="file" accept="image/*" name="images[]" multiple value="">
+            <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="">
 
 
             <div id="listItems">
@@ -178,6 +179,7 @@
                 document.getElementById("submitButton").disabled = true;
             }
         }
+
     </script>
 
 
@@ -185,8 +187,6 @@
     <!-- Carga Suneditor: editor de texto Wysisyg -->
 
     <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/css/suneditor.min.css" rel="stylesheet">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/assets/css/suneditor.css" rel="stylesheet"> -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/assets/css/suneditor-contents.css" rel="stylesheet"> -->
     <script src="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/suneditor.min.js"></script>
     <!-- languages (Basic Language: English/en) -->
     <script src="https://cdn.jsdelivr.net/npm/suneditor@latest/src/lang/ko.js"></script>

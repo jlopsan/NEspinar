@@ -15,7 +15,6 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
-/.vscode
 tests/Pest.php
 /storage/logs/laravel.log
 package-lock.json

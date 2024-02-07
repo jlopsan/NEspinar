@@ -7,6 +7,8 @@ use App\Models\Categorias;
 use App\Models\Opciones;
 use App\Models\Items;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class FrontController extends Controller
 {
@@ -39,9 +41,17 @@ class FrontController extends Controller
             $valores = Items::recuperarValores($idItemDestacado);
             
             foreach (array_keys($valores) as $key) {
-                if (str_contains($valores[$key]->value, "&nbsp;") || str_contains($valores[$key]->value, "<p><br></p>")) {
-                    unset($valores[$key]);
-                }
+                $valores[$key]->value = strip_tags($valores[$key]->value);
+            }
+            
+            $valores = array_unique($valores, SORT_REGULAR);
+
+            $existeProductoSinInformacion = self::compruebaSinInformacion($idItemDestacado, $categoria->id);
+
+            if($existeProductoSinInformacion) {
+                $losaSinInformacion =  new stdClass();
+                $losaSinInformacion->value = 'Sin Información';
+                array_push($valores, $losaSinInformacion);
             }
 
             $data['valores'] = $valores;
@@ -59,10 +69,27 @@ class FrontController extends Controller
             $categoriasList = Categorias::orderBy('order')->get();
             $todosProductos = blank($r->textoBusqueda) ? Productos::recuperarPorCategoria($id) : Productos::buscador($data);
             $opciones = Opciones::convertToArray();
-            if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+            if(empty($todosProductos->items())){
+                $msg = 'No existen resultados de búsqueda';
+            };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'textoBusqueda' => $r->textoBusqueda, 'opciones' => $opciones]);    
         }
+    }
+
+    public function compruebaSinInformacion($iditem, $idCategoria) {
+        return DB::table('items')
+        ->selectRaw('COUNT(productos.id)')
+        ->leftJoin('categorias', 'items.categoria_id', '=', 'categorias.id')
+        ->leftJoin('productos', 'categorias.id', '=', 'productos.categoria_id')
+        ->leftJoin('items_productos', function($join) {
+            $join->on('items.id', '=', 'items_productos.items_id')
+                ->on('productos.id', '=', 'items_productos.productos_id');
+        })
+        ->where('categorias.id', $idCategoria)
+        ->whereNull('items_productos.value')
+        ->where('items.id', $iditem)
+        ->count();
     }
 
     /* Muestra todos los productos de una categoría, filtrados por el valor de un ítem destacado */
@@ -73,7 +100,9 @@ class FrontController extends Controller
             $categoriasList = Categorias::orderBy('order')->get();
             $todosProductos = Productos::recuperarPorCategoria($idCategoria);
             $opciones = Opciones::convertToArray();
-            if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+            if(empty($todosProductos->items())){
+                $msg = 'No existen resultados para el valor de campo especificado';
+            };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'opciones' => $opciones]);    
         } 
@@ -83,7 +112,9 @@ class FrontController extends Controller
             $categoriasList = Categorias::orderBy('order')->get();
             $todosProductos = Productos::recuperarPorCategoriaDestacado($idCategoria, $idItem, $valueItem);
             $opciones = Opciones::convertToArray();
-            if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+            if(empty($todosProductos->items())){
+                $msg = 'No existen resultados para el valor de campo especificado';
+            };
             return view('front.piezas_categorias', ['msg'=> $msg??"",'todosProductos'=>$todosProductos,'categoriasList'=>$categoriasList,'categoria' => $categoria,
             'opciones' => $opciones]);    
         }
@@ -101,7 +132,9 @@ class FrontController extends Controller
         $categoriasList = Categorias::orderBy('order')->get();
         $todosProductos = blank($r->textoBusqueda) ? Productos::recuperarPorCategoria($id) : Productos::buscador($data);
         $opciones = Opciones::convertToArray();
-        if(empty($todosProductos))$msg = 'No hay resultados de búsqueda';
+        if(empty($todosProductos->items())){
+            $msg = 'No existen resultados de búsqueda';
+        };
         return view('front.piezas_categorias', ['productosList'=>$productosList, 'categoriasList'=>$categoriasList, 'opciones' => $opciones, 
                     'msg'=> $msg??"",'textoBusqueda'=> $r->textoBusqueda, 'todosProductos'=>$todosProductos,
                     'categoriasList'=>$categoriasList, 'idCategoria' => $r->idCategoria, 'categoria' => $categoria]);
@@ -123,9 +156,9 @@ class FrontController extends Controller
         $todosProductos =  Productos::buscador($data);
         $opciones = Opciones::convertToArray();
     
-        if ($todosProductos===null){
-            $msg = 'No hay resultados de búsqueda';    
-        } 
+        if (empty($todosProductos->items())) {
+            $msg = 'No existen resultados de búsqueda';   
+        }  
         return view('front.piezas_categorias', 
         [
             'textoBusqueda'=> $r->textoBusqueda,
@@ -147,9 +180,9 @@ class FrontController extends Controller
         $categoriasList = Categorias::orderBy('order')->get();
         $opciones = Opciones::convertToArray();
         $todosProductos = Productos::buscador($data);
-
-        if ($todosProductos===null) {
-            $msg = 'No hay resultados de búsqueda';   
+        
+        if (empty($todosProductos->items())) {
+            $msg = 'No existen resultados de búsqueda';   
         }        
 
         return view('front.piezas_categorias', ['categoria_id' => $r->categoria_id,'msg'=>$msg??"", 'items' => $r->items,'opciones' => $opciones, 'todosProductos'=>$todosProductos, 'categoriasList'=>$categoriasList]);

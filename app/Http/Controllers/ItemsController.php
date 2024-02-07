@@ -106,9 +106,6 @@ class ItemsController extends Controller
             }
             $item->destacado = $destacado;
             $item->save();
-        foreach($item->itemsProductos as $itemProducto){
-            $itemProducto->update(['value' => rtrim(strip_tags($itemProducto->value))]);
-        }
             
             // Devolvemos un JSON con el resultado de la operación
             return response()->json(['success' => true, 'destacado' => $destacado]);
