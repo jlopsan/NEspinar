@@ -1,71 +1,13 @@
 # CAMBIOS EN LA BASE DE DATOS TRAS NUEVO DESPLIEGUE
 
-## Actualización info adicional página principal
+Después de hacer los mismos pasos necesarios para el despliegue anterior (subida de imagenes, storage link, key generate...), debemos ejecutar directamente el script de SQL ubicado en la carpeta db_scripts, en la carpeta raíz del proyecto.
 
-### Se deberán crear 3 nuevas opciones desde el backend de la página:
+> [!WARNING]  
+> Al principio del script, se ejecuta **USE mi_app;** Cambia el nombre de la base de datos a la que referencia según proceda.
 
-- **"home_info_adicional_titulo"**: Hace referencia al titulo del área de información adicional. Valor recomendado: "**COLECCIONES DE**".
+Una vez ejecutemos el script, ahora debemos cambiar un archivo de ubicación para conservar la nueva referencia.
 
-- **"home_info_adicional_image"**: Hace referencia al nombre de una imagen que se mostrará entre titulo y subtitulo. Dicha imagen deberá encontrarse en la carpeta "**/storage/app/public/images**" de laravel. Valor recomendado: "**narciso_espinar_campra.jpg**"
+La imagen en cuestión se encuentra en la carpeta /public y se llama **"narciso_espinar_campra.jpg"**. Debemos cambiar su ubicación a /storage/app/public/images
 
-- **"home_info_adicional_subtitulo"**: Hace referencia al subtitulo del área de información adicional, justo debajo de la imagen. Valor recomendado: "**NARCISO ESPINAR CAMPRA**".
+Ahora, vamos a añadir la imagen de Creative Commons del footer. Debemos descargarla [desde este enlace](https://licensebuttons.net/l/by-nc/4.0/88x31.png) e inculirla en la misma carpeta que la anterior imagen con el nombre de **"creative_commons.png"**
 
-Finalmente, debemos cambiar el tipo de dato de la anteriormente existente opción: "**home_info_adicional**" a tipo numérico, a su vez, debemos cambiar su valor a 1 o 0 dependiendo de si queremos que nuestra página tenga esta sección o no. 
-
-A continuación, el SQL que nos permite automatizar esta tarea y establecer el valor inicial a 1 (true) para que la información adicional se muestre.
-
-```sql
-UPDATE opciones SET 
-opciones.type = 'number',
-opciones.value = 1 
-WHERE opciones.key = 'home_info_adicional';
-```
-
-## Normalizacion de registros de la base de datos
-
-### Añadir etiquetas &lt;p&gt; y &lt;/p&gt; a todos los registros:
-
-Primero se recomienda utilizar esta sentencia para ver que registros van a ser afectados:
-```sql
-SELECT * 
-FROM items_productos
-WHERE VALUE NOT LIKE '%<p%'
-```
-
-Y para modificar los registros añadiendo las etiquetas &lt;p&gt; al principio y &lt;/p&gt; al final se utiliza la siguiente sentencia:
-```sql
-UPDATE items_productos
-SET value = CONCAT("<p>", value, "</p>")
-WHERE VALUE NOT LIKE '%<p%';
-```
-
-### Eliminar todos los registros vacíos &lt;p&gt;&lt;br&gt;&lt;/p&gt; y &lt;p&gt;&lt;/p&gt; de la base de datos
-
-Si hemos realizado el anterior paso, nos encontraremos con varios campos en la tabla **items_productos** cuyo valor es prescindible por el nuevo funcionamiento de la aplicación y que ya no son insertables de ninguna forma en la base de datos. Vamos a eliminarlos. Para ello ejecutaremos el siguiente script.
-
-```sql
-DELETE FROM items_productos 
-WHERE value = '<p><br></p>' OR value = '<p></p>';
-```
-
-### Cambiar los caracteres html \&amp; y \&nbsp; por sus valores reales "&" y " "
-
-Cuando se insertaban los valores & o " " el programa guardaba \&amp; y \&nbsp; en su lugar, este error se ha solucionado pero quedan residuos en la base de datos los cuales se pueden ver con la siguiente consulta:
-
-```sql
-SELECT *
-FROM items_productos
-WHERE value LIKE '%&amp;%' OR value LIKE '%&nbsp;%'
-```
-
-para sustituir estos valores por los valores correctos se puede utilizar la siguiente consulta:
-
-```sql
-UPDATE items_productos
-SET value = REPLACE(value, '&amp;', '&')
-WHERE value LIKE '%&amp;%';
-
-UPDATE items_productos
-SET value = REPLACE(value, '&nbsp;', '')
-WHERE value LIKE '%&nbsp;%';
-```

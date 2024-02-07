@@ -23,7 +23,7 @@
                     @endphp
                     <div class="gridItem">
                         <div class="portfolio-item">
-                            <a class="portfolio-link"
+                            <a class="portfolio-link losa"
                                href="{{route('front.porItemDestacado', ['idCategoria' => $categoria->id, 'idItem' => $idItem, 'valorItem' => $valorItem])}}">
 
                                 <div class="portfolio-caption">
@@ -37,7 +37,7 @@
                     <!-- Muestra una "tarjeta" adicional con el rótulo "Ver todo" para poder ver todos los productos de la categoría -->
                     <div class="gridItem">
                         <div class="portfolio-item">
-                            <a class="portfolio-link" 
+                            <a class="portfolio-link losa" 
                                href="{{ route('front.porItemDestacado', ['idCategoria' => $categoria->id, 'idItem' => '-1', 'valorItem' => 'null'] ) }}">
                                 <div class="portfolio-caption">
                                     <div class="portfolio-caption-heading">Ver todo</div>
