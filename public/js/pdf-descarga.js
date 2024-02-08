@@ -20,9 +20,6 @@
             let opcionesJS = JSON.parse(opciones);
 
             
-            
-             
-    
             // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
             let doc = new jsPDF('portrait', 'pt', 'a4');
             let fontName = "Prata-Regular";
@@ -164,13 +161,21 @@
                 for (var i = 0; i < items.length; i++){
 
                     if (cordenada+interlineado< alturaDoc){
+                        console.log(`Vuelta numero: ${i}`)
+                       console.log(`Cordenada: ${cordenada}`)
                         let ysiguiente = cordenada;
+                        console.log(`Y siguiente del titulo: ${ysiguiente}`)
                         doc.text(`${items[i].name} :`, 56.68,ysiguiente);
                         ysiguiente += interlineado;
+                        console.log(`Y siguiente del texto: ${ysiguiente}`)
                         doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,56.68,ysiguiente); 
-                        cordenada = ysiguiente+(i+1*20)
+                        cordenada = ysiguiente+interlineado
+                        console.log(`Y siguiente final: ${ysiguiente}`)
+                        console.log("------------------------------")
 
                     }else{
+                        console.log("Entrada en el else: ")
+                        console.log(`Valor else de cordenada : ${cordenada}`)
                         doc.addPage();
                         doc.setFont(fontName);
                         doc.setFontSize(9);
@@ -184,12 +189,16 @@
                         doc.setFontSize(12)
                         doc.setFont(fontName);
 
-                        let ysiguiente = 70
+                        let ysiguiente = 70;
+                        console.log(`Asignacion ysiguiente: ${ysiguiente}`)
                         doc.text(`${items[i].name} :`, 56.68,ysiguiente);
                         ysiguiente += interlineado;
+                        console.log(`Y siguiente del final ${ysiguiente}`)
                         doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,56.68,ysiguiente); 
-
                         cordenada = ysiguiente +interlineado;
+                        console.log(`cordenada asignacion: ${cordenada}`);
+                        console.log(`Fin else-----------------------------`)
+                        
                     
                     }
 
