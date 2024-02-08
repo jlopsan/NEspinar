@@ -5,9 +5,6 @@
     // Que se pueda escoger el titulo por campo;
     // https://rawgit.com/MrRio/jsPDF/master/docs/index.html
 
-const { conforms } = require("lodash");
-
-    
         window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
     
     
