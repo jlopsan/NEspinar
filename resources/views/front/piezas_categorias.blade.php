@@ -8,8 +8,9 @@
                 <div class="grid">
                     
                     @if (isset($msg) && !blank($msg))
-                    <div class="text-center">
-                        {{$msg}}
+                    <div class="error">
+                        <div><i class="fa fa-circle-question"></i></div>
+                        <div>{{$msg}}</div>
                     </div>
                     @endif
                     <!-- Pintando las cajas de los productos -->
@@ -23,8 +24,8 @@
                                             <div class="portfolio-hover-content"><i class="fas fa-circle-info fa-3x"></i></div>
                                         </div>
                                         @if ($producto->image!=null)
-                                        <img class="img-fluid" src='{{asset("storage/$producto->id/mini_$producto->image")}}'
-                                        loading="lazy">
+                                            <img class="img-fluid" src='{{asset("storage/$producto->id/mini_$producto->image")}}'
+                                            loading="lazy">
                                         @else
                                         <i class="fa-solid fa-question" style="width: 350px; height: 275px;"></i>
                                         @endif
@@ -218,5 +219,102 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.1/purify.min.js"></script>
+<script src="/js/pdf-descarga.js"></script> 
 
-<script src="/js/pdf-descarga.js"></script>
+<!-- <script>
+
+    window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
+
+    // Genera un PDF con los datos del producto y la imagen del carrusel.
+    // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
+    function imprimir(json_product, image_id, json_items, category) {
+
+        // Convertimos los JSON a objetos
+        var product = JSON.parse(json_product);
+        var items = JSON.parse(json_items);
+        
+        // Creamos un documento PDF en blanco
+        var doc = new jsPDF('portrait', 'mm', 'a4');   // Creamos el PDF en tamaño A4 y con unidades en mm
+        var fontName = "Roboto-Regular";
+        doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
+        doc.setFont(fontName);
+        window.html2canvas = html2canvas; 
+
+        // Creamos un HTML con el contenido que queremos que tenga el PDF
+        var html = "";
+        html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em">' + "{{$opciones['home_titulo']}}" + ' [' + "{{$opciones['home_subtitulo']}}" + ']</p><hr>';
+        html += '<p style="font-family: '+fontName+'; font-size: 140%; letter-spacing: 0.1em">' + product.name + '</p>';
+        html += '<img src="' + document.getElementById(image_id).src + '" width="100%">';
+        for (var i = 0; i < items.length; i++) {
+            html += '<p style="font-family: '+fontName+'; font-size: 120%; letter-spacing: 0.1em;">' + items[i].name + ':';
+            html += items[i].pivot.value.replace(/<p>/g, "<p style='font-family: "+fontName+"; font-size: 100%; letter-spacing: 0.1em;'>");
+            html += '</p>';
+        }
+
+        // Enviamos el HTML al PDF y forzamos la descarga
+        doc.html(html, {
+            callback: function(doc) {
+                // Save the PDF
+                doc.save(product.name + '.pdf');
+            },
+            x: 15,
+            y: 15,
+            margin: [10, 10, 10, 10],
+            autoPaging: 'text',
+            width: 170, //target width in the PDF document
+            windowWidth: 650 //window width in CSS pixels
+        });
+    }
+
+
+    // Descarga la imagen del producto como un archivo. 
+    // Forzamos la descarga mediante Javascript para evitar que el navegador la abra en una nueva pestaña.
+    function download(url_file, filename, product_name, contador) {
+        const link = document.createElement('a');
+        link.href = url_file;
+        // Extraemos la extensión del url_file original
+        var extension = url_file.split('.').pop();
+        link.setAttribute('download', product_name + ' - ' + contador + '.' + extension);
+        link.click();
+    }
+
+    // Script para truncar el valor de los items de más de 200 caracteres y añadir el botón "ver más"
+    document.addEventListener('DOMContentLoaded', function() {
+    var truncarElems = document.querySelectorAll('.truncar');
+    truncarElems.forEach(function(elem) {
+        var contenidoCompleto = elem.innerHTML.trim();
+        var contenidoTruncado = contenidoCompleto.slice(0, 200);
+        var contenidoRestante = contenidoCompleto.slice(200);
+
+        if (contenidoCompleto.length > 200) {
+            var botonVerMas = document.createElement('button');
+            botonVerMas.textContent = 'Ver más...';
+            botonVerMas.classList.add('btn', 'btn-dark'); 
+
+            elem.innerHTML = contenidoTruncado;
+            elem.insertAdjacentElement('afterend', botonVerMas);
+
+            botonVerMas.addEventListener('click', function() {
+                elem.innerHTML = contenidoCompleto;
+                botonVerMas.parentNode.removeChild(botonVerMas);
+
+                var botonVerMenos = document.createElement('button');
+                botonVerMenos.textContent = 'Ver menos...';
+                botonVerMenos.classList.add('btn', 'btn-dark');
+
+                elem.insertAdjacentElement('afterend', botonVerMenos);
+
+                botonVerMenos.addEventListener('click', function() {
+                    elem.innerHTML = contenidoTruncado;
+                    botonVerMenos.parentNode.removeChild(botonVerMenos);
+                    elem.insertAdjacentElement('afterend', botonVerMas);
+                });
+            });
+
+            botonVerMas.insertAdjacentHTML('afterend', '<br>'); 
+        }
+    });
+});
+
+
+</script> -->

@@ -5,6 +5,8 @@
     // Que se pueda escoger el titulo por campo;
     // https://rawgit.com/MrRio/jsPDF/master/docs/index.html
 
+
+    
         window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
     
     
@@ -156,16 +158,20 @@
                 doc.setFont(fontName);
 
                 let cordenada = alturaDeseada+180+interlineado*2;
+                console.log("primera cordenada")
+                console.log(cordenada);
 
                 for (var i = 0; i < items.length; i++){
 
                     if (cordenada+interlineado< alturaDoc){
-                        doc.text(`${items[i].name} :`, 56.68,cordenada);
-                        let ysiguiente = cordenada+ interlineado;
-                        doc.text(`${items[i].pivot.value}`,56.68,ysiguiente); 
+                        let ysiguiente = cordenada;
+                        doc.text(`${items[i].name} :`, 56.68,ysiguiente);
+                        ysiguiente += interlineado;
+                        doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,56.68,ysiguiente); 
+                        cordenada = ysiguiente+(i+1*20)
+
                     }else{
                         doc.addPage();
-
                         doc.setFont(fontName);
                         doc.setFontSize(9);
                         doc.text(opcionesJS.home_titulo,35,33);
@@ -174,7 +180,19 @@
                         let posicionXSubtitulo = anchuraDoc - longitudST-margenBanner;
                         doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
                         doc.line(0, 42.51, 595.14, 42.51);
+
+                        doc.setFontSize(12)
+                        doc.setFont(fontName);
+
+                        let ysiguiente = 70
+                        doc.text(`${items[i].name} :`, 56.68,ysiguiente);
+                        ysiguiente += interlineado;
+                        doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,56.68,ysiguiente); 
+
+                        cordenada = ysiguiente +interlineado;
+                    
                     }
+
                 }
             }
 

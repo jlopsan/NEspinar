@@ -77,7 +77,7 @@
                                 @if(Request::segment(2) == $cat->id)
                                 <li class="nav-item"  style="color:black; width:auto">
                                     <a class="nav-link {{optional($categoria)->id == $cat->id ? 'active' : ''}}"
-                                    href="/categoria/{{$cat->id}}"  style="color:black">
+                                    href="/categoria/{{$cat->id}}" style="color:black">
                                 {{$cat->name}}
                             </a>
                         </li>

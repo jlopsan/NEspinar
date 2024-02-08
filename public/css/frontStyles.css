@@ -19,6 +19,24 @@
   padding: 5em 0 0 0;
 }
 
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  margin-top: 3em;
+  font-size: 2em;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: appear-and-resize both 500ms ease-in-out;
+}
+
+.error :first-child{
+  font-size: 2em;
+}
+
 .grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
@@ -31,6 +49,16 @@
   position: relative;
   justify-self: center;
   align-self: center;
+  opacity: 0;
+  transform: scale(0.96);
+  animation: appear-and-resize both 400ms ease-in-out;
+}
+
+@keyframes appear-and-resize {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .gridItem .portfolio-item {
@@ -46,9 +74,14 @@
   min-height: 130px;
   max-width: 80vw;
   width: 350px;
+  height: 400px;
   background-color: transparent !important;
 }
 
+.gridItem .losa {
+  height: auto;
+}
+  
 .gridItem .portfolio-hover {
   border-radius: 3px;
 }
@@ -57,7 +90,7 @@
   border-radius: 3px;
   width: 350px;
   height: 275px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .gridItem .portfolio-caption {
@@ -112,6 +145,15 @@
 
   .paginacion {
     padding: 4em 0 1em 0;
+  }
+
+  .error{
+    margin-top: 2em;
+    font-size: 1.3em;
+  }
+
+  .error :first-child {
+    font-size: 2.5em;
   }
 
 }

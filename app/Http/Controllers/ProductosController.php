@@ -101,14 +101,15 @@ class ProductosController extends Controller
                 self::saveImage($image, $p->id);         
             }
         }
-
-        foreach($r->items as $item){    //** se guardan los campos del producto
-            if($item['value']!='<p><br></p>'){
-                $itemProducto = new ItemsProductos();
-                $itemProducto->productos_id = $p->id;
-                $itemProducto->value = self::cleanDataEntry($item['value']) ?? '-';
-                $itemProducto->items_id = $item['id'];
-                $itemProducto->save();
+        if($r->items!=null){
+            foreach($r->items as $item){    //** se guardan los campos del producto
+                if($item['value']!='<p><br></p>'){
+                    $itemProducto = new ItemsProductos();
+                    $itemProducto->productos_id = $p->id;
+                    $itemProducto->value = self::cleanDataEntry($item['value']) ?? '-';
+                    $itemProducto->items_id = $item['id'];
+                    $itemProducto->save();
+                }
             }
         }
         return redirect()->route('buscadorBack', ['idCategoria' => $p->categoria_id]);
