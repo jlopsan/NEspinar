@@ -4,8 +4,7 @@
     // QUe se puedan elegir diferentes tamaños de las fotos (Con un modal)
     // Que se pueda escoger el titulo por campo;
     // https://rawgit.com/MrRio/jsPDF/master/docs/index.html
-
-
+      
     
         window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
     
@@ -26,15 +25,11 @@
             let fontNameTitulos= "Cinzel-VariableFont_wght";
             doc.addFont('/fonts/'+fontName+'.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
             doc.addFont('/fonts/'+fontNameTitulos+'.ttf', fontNameTitulos, 'normal');
-            let margenDerecho= 30;
-            let margenIzquierdo= 30; 
-            let margenTop= 30;
-            let margenBot=30;
             let interlineado=30; 
             const anchuraDoc = doc.internal.pageSize.getWidth();
             const alturaDoc = doc.internal.pageSize.getHeight();
+            const anchuraDocWM = anchuraDoc-60
           
-         
             /*
             Coordenadas Paginacion. 
             Esquina superior izquierda: (0, 0)
@@ -64,7 +59,7 @@
       
     
             if(doc.getTextDimensions(`${product.name}`).w < anchuraDoc){
-    
+
                 doc.text(`${product.name}`,xProdName,82);
             }else{
                 let nombreEntero= product.name;
@@ -120,13 +115,36 @@
                 
              doc.setFontSize(12)
              doc.setFont(fontName);
+
+             let cordenada = alturaDeseada+180+interlineado;
+
              for (var i = 0; i < items.length; i++){
 
-                let cordenada = alturaDeseada+180+interlineado+i*interlineado;
-
                 if (cordenada+interlineado< alturaDoc){
-                    doc.text(`${items[i].name} :`, 56.68,cordenada)
+                
+                    let ysiguiente = cordenada;
+                    
+                    doc.text(`${items[i].name} :`, 56.68,ysiguiente);
+                    ysiguiente += interlineado;
+                   
+                    let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`).w 
+                    
+
+                    if(longitudC> anchuraDocWM){
+                    
+                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDocWM);
+                        
+                        for (let j = 0; j< arrayLineas.length; j++) {
+                            
+                            doc.text(`${arrayLineas[j]}`,70,ysiguiente);
+                            ysiguiente += interlineado;
+                        }
+                    }else {
+                        doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,70,ysiguiente);
+                    }
+                    cordenada = ysiguiente+interlineado
                 }else{
+               
                     doc.addPage();
                     doc.setFont(fontName);
                     doc.setFontSize(9);
@@ -137,14 +155,38 @@
                     doc.text(opcionesJS.home_subtitulo,posicionXSubtitulo,33);
                     doc.line(0, 42.51, 595.14, 42.51);
 
-                    cordenada = 0;
+                    doc.setFontSize(12)
+                    doc.setFont(fontName);
 
-                   
+                    let ysiguiente = 90;
+                    
+                    doc.text(`${items[i].name} :`, 56.68,ysiguiente);
+
+                    ysiguiente += interlineado;
+
+                     let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`).w +72
+                    console.log(longitudC);
+                    console.log(anchuraDocWM);
+
+                    if(longitudC> anchuraDocWM){
+                    
+                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDocWM);
+                    console.log(arrayLineas);
+    
+                        for (let j = 0; j< arrayLineas.length; j++) {
+                            doc.text(arrayLineas[j],70,ysiguiente);
+                            ysiguiente += interlineado;
+                        }
+                    }else {
+                        doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,70,ysiguiente);
+                    }
+
+                    cordenada = ysiguiente+interlineado
                 }
-             }
 
             }
 
+            }
             if (anchoOriginalPT<alturaOriginalPT){
                 let alturaDeseada = 400;
                 let anchuraDeseada= alturaDeseada*ratio;
@@ -155,27 +197,33 @@
                 doc.setFont(fontName);
 
                 let cordenada = alturaDeseada+180+interlineado*2;
-                console.log("primera cordenada")
-                console.log(cordenada);
 
                 for (var i = 0; i < items.length; i++){
 
                     if (cordenada+interlineado< alturaDoc){
-                        console.log(`Vuelta numero: ${i}`)
-                       console.log(`Cordenada: ${cordenada}`)
+                    
                         let ysiguiente = cordenada;
-                        console.log(`Y siguiente del titulo: ${ysiguiente}`)
+                        
                         doc.text(`${items[i].name} :`, 56.68,ysiguiente);
                         ysiguiente += interlineado;
-                        console.log(`Y siguiente del texto: ${ysiguiente}`)
-                        doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,56.68,ysiguiente); 
-                        cordenada = ysiguiente+interlineado
-                        console.log(`Y siguiente final: ${ysiguiente}`)
-                        console.log("------------------------------")
+                       
+                        let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`).w 
 
+                        if(longitudC> anchuraDocWM){
+                        
+                        arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDocWM);
+                            
+                            for (let i = 0; i< arrayLineas.length; i++) {
+                                
+                                doc.text(`${arrayLineas[i]}`,70,ysiguiente);
+                                ysiguiente += interlineado;
+                            }
+                        }else {
+                            doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,70,ysiguiente);
+                        }
+                        cordenada = ysiguiente+interlineado
                     }else{
-                        console.log("Entrada en el else: ")
-                        console.log(`Valor else de cordenada : ${cordenada}`)
+                   
                         doc.addPage();
                         doc.setFont(fontName);
                         doc.setFontSize(9);
@@ -189,17 +237,30 @@
                         doc.setFontSize(12)
                         doc.setFont(fontName);
 
-                        let ysiguiente = 70;
-                        console.log(`Asignacion ysiguiente: ${ysiguiente}`)
-                        doc.text(`${items[i].name} :`, 56.68,ysiguiente);
-                        ysiguiente += interlineado;
-                        console.log(`Y siguiente del final ${ysiguiente}`)
-                        doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,56.68,ysiguiente); 
-                        cordenada = ysiguiente +interlineado;
-                        console.log(`cordenada asignacion: ${cordenada}`);
-                        console.log(`Fin else-----------------------------`)
+                        let ysiguiente = 90;
                         
-                    
+                        doc.text(`${items[i].name} :`, 56.68,ysiguiente);
+
+                        ysiguiente += interlineado;
+
+                         let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`).w +72
+                        console.log(longitudC);
+                        console.log(anchuraDocWM);
+
+                        if(longitudC> anchuraDocWM){
+                        
+                        arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDocWM);
+                        console.log(arrayLineas);
+        
+                            for (let i = 0; i< arrayLineas.length; i++) {
+                                doc.text(arrayLineas[i],70,ysiguiente);
+                                ysiguiente += interlineado;
+                            }
+                        }else {
+                            doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`,70,ysiguiente);
+                        }
+
+                        cordenada = ysiguiente+interlineado
                     }
 
                 }
