@@ -219,8 +219,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.1/purify.min.js"></script>
+<script src="/js/pdf-descarga.js"></script> 
 
-<script>
+<!-- <script>
 
     window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
 
@@ -316,6 +317,4 @@
 });
 
 
-</script>
-
-<!--  <script src="/js/pdf-descarga.js"></script> -->
+</script> -->
