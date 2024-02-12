@@ -59,7 +59,6 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
 
     if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc) {
-
         doc.text(`${product.name}`, xProdName, 82);
     } else {
         let nombreEntero = product.name;
