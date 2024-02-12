@@ -58,7 +58,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     let xProdName = ((anchuraDoc / 2) - (longitudProductName / 2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
 
 
-    if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc) {
+    if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc-50) {
         doc.text(`${product.name}`, xProdName, 82);
     } else {
         let nombreEntero = product.name;
@@ -119,7 +119,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
         for (var i = 0; i < items.length; i++) {
 
-            if (cordenada + interlineado + 30 < alturaDoc) {
+            if (cordenada + interlineado  < alturaDoc -50) {
 
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
@@ -130,14 +130,16 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                 let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`).w
 
 
-                if (longitudC > anchuraDocWM) {
+                if (longitudC > anchuraDocWM -50) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM);
+                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM-50);
                     let x = 70
                     for (let j = 0; j < arrayLineas.length; j++) {
                         doc.text(`${arrayLineas[j]}`, x, ysiguiente);
                         ysiguiente += interlineado;
                         x = 56;
+
+
                     }
                 } else {
                     doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`, 70, ysiguiente);
@@ -169,7 +171,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                 if (longitudC > anchuraDocWM) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM);
+                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM-50);
 
                     let x = 70
                     for (let j = 0; j < arrayLineas.length; j++) {
@@ -213,7 +215,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                 if (longitudC > anchuraDocWM) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM);
+                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM-50);
                     let x = 70
                     for (let i = 0; i < arrayLineas.length; i++) {
 
@@ -250,7 +252,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                 if (longitudC > anchuraDocWM) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM);
+                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''), anchuraDocWM-50);
 
                     let x = 70
                     for (let i = 0; i < arrayLineas.length; i++) {
