@@ -82,21 +82,23 @@
                                                                 <!-- Imagen principal -->
                                                                 <div class="carousel-item active w-100">
                                                                     <!-- Botones de descarga e impresión de la imagen principal -->
-                                                                    <div class="d-flex justify-content-center" style="padding-bottom: 5px">
+                                                                    <div class="d-flex justify-content-center gap-1" style="padding-bottom: 5px">
                                                                         <button class="btn btn-outline-secondary fa-solid fa-print mt-3" onclick="imprimir('{{addslashes(json_encode($producto,JSON_UNESCAPED_UNICODE))}}', 'mi_imagen{{$key}}', '{{addslashes(json_encode($producto->items,JSON_UNESCAPED_UNICODE))}}', '{{$producto->categoriaName}}','{{addslashes(json_encode($opciones))}}')">
                                                                         <button class="btn btn-outline-secondary fa-solid fa-download mt-3" onclick="download('{{asset("storage/$producto->id/$producto->image")}}','{{$producto->image}}', '{{$producto->name}}', 0)">
                                                                     </div>   
                                                                     <!-- Imagen -->   
                                                                     
                                                                     @if($producto->image!=null)
-                                                                                                
-                                                                    <img id="mi_imagen{{$key}}" class="center-block w-40"
+                                                                    <div class="img-wrapper">
+                                                                        <img id="mi_imagen{{$key}}" class="center-block w-40"
                                                                         src='{{asset("storage/$producto->id/mini_$producto->image")}}'
                                                                         alt="{{$producto->image}}" height="400" 
                                                                         loading="lazy"/>
                                                                         @else
                                                                             <i class="fa-solid fa-question" style="height: 500px; margin-bottom: 32px"></i>
                                                                         @endif
+                                                                    </div>                          
+                                                                    
                                                                 </div>
 
                                                                 <!-- Imagenes secundarias -->
@@ -221,6 +223,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.1/purify.min.js"></script>
 <script src="/js/pdf-descarga.js"></script> 
+<script src="/js/zoom.js"></script>
 
 <!-- <script>
 
