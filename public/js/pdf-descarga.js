@@ -21,9 +21,10 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
     // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
     let doc = new jsPDF('portrait', 'pt', 'a4');
-    let fontName = "Prata-Regular";
+    let fontName = "NotoSerif-VariableFont_wdth,wght";
     let fontNameTitulos = "Cinzel-VariableFont_wght";
     doc.addFont('/fonts/' + fontName + '.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
+    doc.addFont('/fonts/' + fontName + '.ttf', fontName, 'medium');
     doc.addFont('/fonts/' + fontNameTitulos + '.ttf', fontNameTitulos, 'normal');
     let interlineado = 30;
     const anchuraDoc = doc.internal.pageSize.getWidth();
@@ -124,7 +125,9 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
+                doc.setFontSize(14);
                 doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                doc.setFontSize(12);
                 doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
                 
