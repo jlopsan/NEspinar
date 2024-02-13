@@ -102,6 +102,16 @@
   margin-right: 2em;
 }
 
+.portfolio-modal {
+  margin: 1em;
+  margin-bottom: 100px;
+}
+
+.modal-content {
+  padding-bottom: 2em;
+  margin-bottom: 3em;
+}
+
 @media (min-width: 1400px){
 .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
   max-width: 1900px;
