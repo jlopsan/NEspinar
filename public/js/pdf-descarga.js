@@ -47,6 +47,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
     let margenBanner = 25;
     let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+    let margenEntreItem = 10;
     doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
     doc.line(0, 42.51, 595.14, 42.51);
 
@@ -58,7 +59,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     let xProdName = ((anchuraDoc / 2) - (longitudProductName / 2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
 
 
-    if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc-50) {
+    if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc - 50) {
         doc.text(`${product.name}`, xProdName, 82);
     } else {
         let nombreEntero = product.name;
@@ -115,34 +116,46 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         doc.setFontSize(12)
         doc.setFont(fontName);
 
-        let cordenada = alturaDeseada + 180 + interlineado;
+        let cordenada = alturaDeseada + 190 + interlineado;
 
         for (var i = 0; i < items.length; i++) {
-
-            if (cordenada + interlineado  < alturaDoc -50) {
+            let x = 70;
+            if (cordenada + interlineado < alturaDoc - 50) {
 
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
                 doc.text(`${items[i].name} :`, 56.68, ysiguiente);
-                doc.setFont(fontName,"normal");
+                doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
+                
 
-                let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+                // let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
 
+                arrayP = items[i].pivot.value.split("</p>");
+                arrayP.pop();
 
-                if (longitudC > anchuraDocWM -50) {
+                for (let k = 0; k < arrayP.length; k++) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM-50);
-                    let x = 70
-                    for (let j = 0; j < arrayLineas.length; j++) {
-                        doc.text(`${arrayLineas[j]}`, x, ysiguiente);
-                        ysiguiente += interlineado;
-                        x = 56;
+                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+
+                    if (longitudC > anchuraDocWM - 50) {
+
+                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+
+                        for (let z = 0; z < arrayLineas.length; z++) {
+                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                            ysiguiente += interlineado;
+                            x = 56;
+                        }
+                       
                     }
-                } else {
-                    doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
-                }
-                cordenada = ysiguiente + interlineado
+                    else {
+                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        ysiguiente += interlineado;
+                    }
+
+                } 
+                cordenada = ysiguiente +margenEntreItem
             } else {
 
                 doc.addPage();
@@ -159,29 +172,34 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                 doc.setFont(fontName);
 
                 let ysiguiente = 90;
-                doc.setFont(fontName,"bold");
+                doc.setFont(fontName, "bold");
                 doc.text(`${items[i].name} :`, 56.68, ysiguiente);
-                doc.setFont(fontName,"normal");
+                doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
 
-                let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w + 72
-        
+                arrayP = items[i].pivot.value.split("</p>");
+                arrayP.pop();
 
-                if (longitudC > anchuraDocWM) {
+                for (let k = 0; k < arrayP.length; k++) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM-50);
+                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
 
-                    let x = 70
-                    for (let j = 0; j < arrayLineas.length; j++) {
-                        doc.text(arrayLineas[j], x, ysiguiente);
-                        ysiguiente += interlineado;
-                        x = 56;
+                    if (longitudC > anchuraDocWM - 50) {
+                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                        for (let z = 0; z < arrayLineas.length; z++) {
+                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                            ysiguiente += interlineado;
+                            x = 56;
+                        }
+                       
                     }
-                } else {
-                    doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
-                }
+                    else {
+                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        ysiguiente += interlineado;
+                    }
 
-                cordenada = ysiguiente + interlineado
+                } 
+                cordenada = ysiguiente +margenEntreItem
             }
 
         }
@@ -196,35 +214,42 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         doc.setFontSize(12)
         doc.setFont(fontName);
 
-        let cordenada = alturaDeseada + 180 + interlineado * 2;
+        let cordenada = alturaDeseada + 190 + interlineado ;
 
         for (var i = 0; i < items.length; i++) {
-
+            let x = 70;
             if (cordenada + interlineado + 30 < alturaDoc) {
 
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
 
                 doc.text(`${items[i].name} :`, 56.68, ysiguiente);
-                doc.setFont(fontName,"normal");
+                doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
 
-                let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+                arrayP = items[i].pivot.value.split("</p>");
+                arrayP.pop();
 
-                if (longitudC > anchuraDocWM) {
+                for (let k = 0; k < arrayP.length; k++) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM-50);
-                    let x = 70
-                    for (let i = 0; i < arrayLineas.length; i++) {
+                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
 
-                        doc.text(`${arrayLineas[i]}`, 70, ysiguiente);
-                        ysiguiente += interlineado;
-                        x = 56;
+                    if (longitudC > anchuraDocWM - 50) {
+                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                        for (let z = 0; z < arrayLineas.length; z++) {
+                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                            ysiguiente += interlineado;
+                            x = 56;
+                        }
+                       
                     }
-                } else {
-                    doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
-                }
-                cordenada = ysiguiente + interlineado
+                    else {
+                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        ysiguiente += interlineado;
+                    }
+
+                } 
+                cordenada = ysiguiente+margenEntreItem
             } else {
 
                 doc.addPage();
@@ -241,28 +266,33 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                 doc.setFont(fontName);
 
                 let ysiguiente = 90;
-                doc.setFont(fontName,"bold");
+                doc.setFont(fontName, "bold");
                 doc.text(`${items[i].name} :`, 56.68, ysiguiente);
-                doc.setFont(fontName,"normal");
+                doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
 
-                let longitudC = doc.getTextDimensions(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w + 72
+                arrayP = items[i].pivot.value.split("</p>");
+                arrayP.pop();
 
-                if (longitudC > anchuraDocWM) {
+                for (let k = 0; k < arrayP.length; k++) {
 
-                    arrayLineas = doc.splitTextToSize(items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM-50);
+                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
 
-                    let x = 70
-                    for (let i = 0; i < arrayLineas.length; i++) {
-                        doc.text(arrayLineas[i], 70, ysiguiente);
-                        ysiguiente += interlineado;
-                        x = 56;
+                    if (longitudC > anchuraDocWM - 50) {
+                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                        for (let z = 0; z < arrayLineas.length; z++) {
+                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                            ysiguiente += interlineado;
+                            x = 56;
+                        }
+                       
                     }
-                } else {
-                    doc.text(`${items[i].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
-                }
-
-                cordenada = ysiguiente + interlineado
+                    else {
+                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        ysiguiente += interlineado;
+                    }
+                } 
+                cordenada = ysiguiente+margenEntreItem
             }
 
         }
