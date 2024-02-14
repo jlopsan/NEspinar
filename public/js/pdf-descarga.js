@@ -21,9 +21,10 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
     // GESTIONAMOS LAS VARAIBLES QUE NECESITAMOS PARA EL PDF -----------------------------------------------
     let doc = new jsPDF('portrait', 'pt', 'a4');
-    let fontName = "Prata-Regular";
+    let fontName = "NotoSerif-VariableFont_wdth,wght";
     let fontNameTitulos = "Cinzel-VariableFont_wght";
     doc.addFont('/fonts/' + fontName + '.ttf', fontName, 'normal'); // Es necesario usar una fuente con soporte unicode y poner el archivo ttf en /public/fonts
+    doc.addFont('/fonts/' + fontName + '.ttf', fontName, 'medium');
     doc.addFont('/fonts/' + fontNameTitulos + '.ttf', fontNameTitulos, 'normal');
     let interlineado = 30;
     const anchuraDoc = doc.internal.pageSize.getWidth();
@@ -100,14 +101,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     }
 
 
-    // FOTOGRAFIAS----------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------FOTOGRAFIAS-------------------------------------------------------------------------
     let imagen = document.getElementById(image_id);
 
     let anchoOriginalPT = imagen.naturalWidth / 1.3;
     let alturaOriginalPT = imagen.naturalHeight / 1.3;
     let ratio = anchoOriginalPT / alturaOriginalPT;
 
-    if (anchoOriginalPT > alturaOriginalPT) {
+    if (anchoOriginalPT > alturaOriginalPT) { //-------------------------------------------------------------LOGICA FOTOGRAFIA MAS ANCHA QUE ALTA------------------------------------------
         let anchuraDeseada = 320;
         let alturaDeseada = anchuraDeseada / ratio;
         let xImagen = ((anchuraDoc / 2) - (anchuraDeseada / 2));
@@ -118,13 +119,17 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
         let cordenada = alturaDeseada + 190 + interlineado;
 
-        for (var i = 0; i < items.length; i++) {
+        for (var i = 0; i < items.length; i++) {            //--------------------------BUCLE DE TODOS LOS ITEMS-----------------------------------------
+            
             let x = 70;
-            if (cordenada + interlineado < alturaDoc - 50) {
+
+            if (cordenada + interlineado < alturaDoc - 50) {  
 
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
+                doc.setFontSize(14);
                 doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                doc.setFontSize(12);
                 doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
                 
@@ -205,7 +210,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         }
 
     }
-    if (anchoOriginalPT < alturaOriginalPT) {
+    if (anchoOriginalPT < alturaOriginalPT) { //-----------------------------------------------------LOGICA FOTOGRAFIA MAS ALTA QUE ANCHA---------------------------------------------
         let alturaDeseada = 400;
         let anchuraDeseada = alturaDeseada * ratio;
         let xImagen = ((anchuraDoc / 2) - (anchuraDeseada / 2));
