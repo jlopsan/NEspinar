@@ -124,7 +124,7 @@
 
 .img-wrapper img {
   margin-bottom: 0 !important;
-  height: 450px;
+  height: 24rem;
   border-radius: 4px;
 }
 
@@ -140,18 +140,23 @@
 .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
   max-width: 1900px;
 }
+
+.carousel-item img{
+  height: 32rem;
+}
+
 }
 
 @media (max-width: 991px) {
+  .carousel-item img{
+    width: 100%;
+    height: auto;
+  }
   .content-wrapper {
     padding-top: 3em;
   }
   .searchParent {
     width: 100%;
-  }
-  .carousel-item img{
-    width:100%;
-    height: auto;
   }
   .portfolio-modal .modal-content h2, .portfolio-modal .modal-content .h2{
     font-size: 1.5rem;
