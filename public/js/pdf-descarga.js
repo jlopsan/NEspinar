@@ -101,14 +101,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     }
 
 
-    // FOTOGRAFIAS----------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------FOTOGRAFIAS-------------------------------------------------------------------------
     let imagen = document.getElementById(image_id);
 
     let anchoOriginalPT = imagen.naturalWidth / 1.3;
     let alturaOriginalPT = imagen.naturalHeight / 1.3;
     let ratio = anchoOriginalPT / alturaOriginalPT;
 
-    if (anchoOriginalPT > alturaOriginalPT) {
+    if (anchoOriginalPT > alturaOriginalPT) { //-------------------------------------------------------------LOGICA FOTOGRAFIA MAS ANCHA QUE ALTA------------------------------------------
         let anchuraDeseada = 320;
         let alturaDeseada = anchuraDeseada / ratio;
         let xImagen = ((anchuraDoc / 2) - (anchuraDeseada / 2));
@@ -119,9 +119,11 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
         let cordenada = alturaDeseada + 190 + interlineado;
 
-        for (var i = 0; i < items.length; i++) {
+        for (var i = 0; i < items.length; i++) {            //--------------------------BUCLE DE TODOS LOS ITEMS-----------------------------------------
+            
             let x = 70;
-            if (cordenada + interlineado < alturaDoc - 50) {
+
+            if (cordenada + interlineado < alturaDoc - 50) {  
 
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
@@ -208,7 +210,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         }
 
     }
-    if (anchoOriginalPT < alturaOriginalPT) {
+    if (anchoOriginalPT < alturaOriginalPT) { //-----------------------------------------------------LOGICA FOTOGRAFIA MAS ALTA QUE ANCHA---------------------------------------------
         let alturaDeseada = 400;
         let anchuraDeseada = alturaDeseada * ratio;
         let xImagen = ((anchuraDoc / 2) - (anchuraDeseada / 2));
