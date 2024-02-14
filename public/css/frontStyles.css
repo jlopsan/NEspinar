@@ -119,11 +119,13 @@
   overflow: hidden;
   cursor: zoom-in;
   margin-bottom: 3em;
+  border-radius: 4px;
 }
 
 .img-wrapper img {
   margin-bottom: 0 !important;
-  height: 400px;
+  height: 450px;
+  border-radius: 4px;
 }
 
 .img-wrapper img:hover {
