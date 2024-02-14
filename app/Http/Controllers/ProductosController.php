@@ -203,7 +203,7 @@ class ProductosController extends Controller
 
     public function buscadorProductos(Request $r) {
         $categorias = Categorias::all();
-        if($r->textoBusqueda == trim('')) {
+        if($r->textoBusqueda == trim('') && $r -> idCategoria == null) {
             return self::index();
         } 
         $productosList = Productos::busquedaProductos($r->idCategoria, $r->textoBusqueda);

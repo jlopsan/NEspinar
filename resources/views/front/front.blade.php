@@ -55,7 +55,7 @@
                 <div class="Ticatego">{!! $opciones['home_info_adicional_titulo'] !!}</div>
                 <div class="d-flex justify-content-center align-items-center">
                     <img class="rounded-circle" style="border: 8px solid {{ $opciones['color_nav'] }}"
-                        src="{!! $opciones['home_info_adicional_image'] !!}" alt="">
+                        src="storage/images/{!! $opciones['home_info_adicional_image'] !!}" alt="">
                 </div>
                 <div class="Ticatego fs-5 mt-5">{!! $opciones['home_info_adicional_subtitulo'] !!}</div>
             @endif

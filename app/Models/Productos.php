@@ -116,7 +116,6 @@ class Productos extends Model
                 
             }
         }
-        dd($elementosPorPagina);
         // Paginamos el resultado
         $resultadoPaginado = new LengthAwarePaginator($resultadoBusqueda, count($resultadoBusqueda), $elementosPorPagina);
         $resultadoPaginado->appends(['textoBusqueda' => $textoBusquedaOG]);
