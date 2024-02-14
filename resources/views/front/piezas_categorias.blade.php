@@ -89,15 +89,17 @@
                                                                     <!-- Imagen -->   
                                                                     
                                                                     @if($producto->image!=null)
-                                                                    <div class="img-wrapper">
-                                                                        <img id="mi_imagen{{$key}}" class="center-block w-40"
+                                                                    <figure class="img-wrapper" onmousemove="zoom(event)" style="background-image: url('{{asset("storage/$producto->id/mini_$producto->image")}}')">
+                                                                        <img id="mi_imagen{{$key}}" class="center-block"
                                                                         src='{{asset("storage/$producto->id/mini_$producto->image")}}'
-                                                                        alt="{{$producto->image}}" height="400" 
+                                                                        alt="{{$producto->image}}"
                                                                         loading="lazy"/>
+                                                                    </figure>
+                                                                        
                                                                         @else
                                                                             <i class="fa-solid fa-question" style="height: 500px; margin-bottom: 32px"></i>
                                                                         @endif
-                                                                    </div>                          
+                                                                                             
                                                                     
                                                                 </div>
 
