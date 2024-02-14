@@ -40,11 +40,22 @@ class FrontController extends Controller
             $idItemDestacado = $destacados[0]->id;
             $valores = Items::recuperarValores($idItemDestacado);
             
+            // Eliminamos todas las etiquetas y los valores unicode vacíos (%E2%80%8E)
+
             foreach (array_keys($valores) as $key) {
                 $valores[$key]->value = strip_tags($valores[$key]->value);
+                $valores[$key]->value = preg_replace('/\p{C}+/u', "", $valores[$key]->value);
             }
+
+            // Si hay valores con unicode vacíos estarán repetidos, dejamos solo uno
             
             $valores = array_unique($valores, SORT_REGULAR);
+
+            // El valor unicode SIEMPRE se posicionará por delante de cualquier valor alfanumérico, por lo que reordenamos
+
+            asort($valores);
+
+            // Comprobamos si tenemos que añadir la losa SIN INFORMACIÓN, si existe, se añade al final de la página
 
             $existeProductoSinInformacion = self::compruebaSinInformacion($idItemDestacado, $categoria->id);
 
@@ -53,6 +64,8 @@ class FrontController extends Controller
                 $losaSinInformacion->value = 'Sin Información';
                 array_push($valores, $losaSinInformacion);
             }
+
+            // Declaramos los datos para la visualización con blade
 
             $data['valores'] = $valores;
             $data['categoria'] = $categoria;
