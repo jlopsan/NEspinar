@@ -56,6 +56,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     // TITULO DEL PRODUCTO---------------------------------------------------------------------------------
     doc.setFont(fontNameTitulos);
     doc.setFontSize(30);
+
     let longitudProductName = doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
     let xProdName = ((anchuraDoc / 2) - (longitudProductName / 2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
 
@@ -63,18 +64,15 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc - 50) {
         doc.text(`${product.name}`, xProdName, 82);
     } else {
-        let nombreEntero = product.name;
-        let tamañoCadena = nombreEntero.length;
-        let PMitad = nombreEntero.substring(0, tamañoCadena / 2);
-        let SMitad = nombreEntero.substring(tamañoCadena / 2);
-
-        let longMitad = doc.getStringUnitWidth(PMitad) * doc.internal.getFontSize();
-        let xPMitad = ((anchuraDoc / 2) - (longMitad / 2));
-        doc.text(`${PMitad} -`, xPMitad, 82);
-
-        let longMitad2 = doc.getStringUnitWidth(SMitad) * doc.internal.getFontSize();
-        let xSMitad = ((anchuraDoc / 2) - (longMitad2 / 2));
-        doc.text(`${SMitad}`, xSMitad, 82 + interlineado);
+        let arrayTitulo = doc.splitTextToSize(product.name,anchuraDoc - 100)
+        
+        let ytitulo = 82;
+        for (let i = 0; i < arrayTitulo.length; i++) {
+            let longitudMitad = doc.getStringUnitWidth(arrayTitulo[i])* doc.internal.getFontSize();
+            let xtitulo = ((anchuraDoc/2)-(longitudMitad/2))
+            doc.text(`${arrayTitulo[i]}`,xtitulo,ytitulo);
+            ytitulo+= interlineado;
+        }
     };
     //SUBTITULO--------------------------------------------------------------------------------------------------------------------------------
     doc.setFontSize(18);
@@ -148,15 +146,68 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
 
                         for (let z = 0; z < arrayLineas.length; z++) {
-                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
-                            ysiguiente += interlineado;
-                            x = 56;
+
+                            if (ysiguiente+interlineado < alturaDoc - 50){
+                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                ysiguiente += interlineado;
+                                x = 56;
+                            }
+                            else{
+                                doc.addPage();
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
+
+                                doc.setFontSize(12)
+                                doc.setFont(fontName);
+
+                                let ysiguiente = 90;
+                                doc.setFont(fontName, "bold");
+                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.setFont(fontName, "normal");
+                                ysiguiente += interlineado;
+
+                                arrayP = items[i].pivot.value.split("</p>");
+                                arrayP.pop();
+
+                                for (let k = 0; k < arrayP.length; k++) {
+
+                                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+
+                                    if (longitudC > anchuraDocWM - 50) {
+                                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                                        for (let z = 0; z < arrayLineas.length; z++) {
+                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            ysiguiente += interlineado;
+                                            x = 56;
+                                        }
+                                    
+                                    }
+                                    else {
+                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        ysiguiente += interlineado;
+                                    }
+
+                                } 
+                                cordenada = ysiguiente +margenEntreItem
+
+                            }
+                          
+
                         }
                        
                     }
                     else {
+
                         doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        
                         ysiguiente += interlineado;
+
                     }
 
                 } 
@@ -192,9 +243,56 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                     if (longitudC > anchuraDocWM - 50) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                         for (let z = 0; z < arrayLineas.length; z++) {
-                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
-                            ysiguiente += interlineado;
-                            x = 56;
+                            if (ysiguiente+interlineado < alturaDoc - 50){
+                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                ysiguiente += interlineado;
+                                x = 56;
+                            }
+                            else{
+                                doc.addPage();
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
+
+                                doc.setFontSize(12)
+                                doc.setFont(fontName);
+
+                                let ysiguiente = 90;
+                                doc.setFont(fontName, "bold");
+                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.setFont(fontName, "normal");
+                                ysiguiente += interlineado;
+
+                                arrayP = items[i].pivot.value.split("</p>");
+                                arrayP.pop();
+
+                                for (let k = 0; k < arrayP.length; k++) {
+
+                                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+
+                                    if (longitudC > anchuraDocWM - 50) {
+                                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                                        for (let z = 0; z < arrayLineas.length; z++) {
+                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            ysiguiente += interlineado;
+                                            x = 56;
+                                        }
+                                    
+                                    }
+                                    else {
+                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        ysiguiente += interlineado;
+                                    }
+
+                                } 
+                                cordenada = ysiguiente +margenEntreItem
+
+                            }
                         }
                        
                     }
@@ -242,9 +340,56 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                     if (longitudC > anchuraDocWM - 50) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                         for (let z = 0; z < arrayLineas.length; z++) {
-                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
-                            ysiguiente += interlineado;
-                            x = 56;
+                            if (ysiguiente+interlineado < alturaDoc - 50){
+                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                ysiguiente += interlineado;
+                                x = 56;
+                            }
+                            else{
+                                doc.addPage();
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
+
+                                doc.setFontSize(12)
+                                doc.setFont(fontName);
+
+                                let ysiguiente = 90;
+                                doc.setFont(fontName, "bold");
+                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.setFont(fontName, "normal");
+                                ysiguiente += interlineado;
+
+                                arrayP = items[i].pivot.value.split("</p>");
+                                arrayP.pop();
+
+                                for (let k = 0; k < arrayP.length; k++) {
+
+                                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+
+                                    if (longitudC > anchuraDocWM - 50) {
+                                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                                        for (let z = 0; z < arrayLineas.length; z++) {
+                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            ysiguiente += interlineado;
+                                            x = 56;
+                                        }
+                                    
+                                    }
+                                    else {
+                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        ysiguiente += interlineado;
+                                    }
+
+                                } 
+                                cordenada = ysiguiente +margenEntreItem
+
+                            }
                         }
                        
                     }
@@ -286,9 +431,56 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                     if (longitudC > anchuraDocWM - 50) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                         for (let z = 0; z < arrayLineas.length; z++) {
-                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
-                            ysiguiente += interlineado;
-                            x = 56;
+                            if (ysiguiente+interlineado < alturaDoc - 50){
+                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                ysiguiente += interlineado;
+                                x = 56;
+                            }
+                            else{
+                                doc.addPage();
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
+
+                                doc.setFontSize(12)
+                                doc.setFont(fontName);
+
+                                let ysiguiente = 90;
+                                doc.setFont(fontName, "bold");
+                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.setFont(fontName, "normal");
+                                ysiguiente += interlineado;
+
+                                arrayP = items[i].pivot.value.split("</p>");
+                                arrayP.pop();
+
+                                for (let k = 0; k < arrayP.length; k++) {
+
+                                    let longitudC = doc.getTextDimensions(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`).w
+
+                                    if (longitudC > anchuraDocWM - 50) {
+                                        arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
+                                        for (let z = 0; z < arrayLineas.length; z++) {
+                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            ysiguiente += interlineado;
+                                            x = 56;
+                                        }
+                                    
+                                    }
+                                    else {
+                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        ysiguiente += interlineado;
+                                    }
+
+                                } 
+                                cordenada = ysiguiente +margenEntreItem
+
+                            }
                         }
                        
                     }
