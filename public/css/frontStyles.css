@@ -136,13 +136,15 @@
   transition: opacity 0.5s;
 }
 
+@media (min-width: 1920px) {
+  .carousel-item img{
+    height: 32rem;
+  }
+}
+
 @media (min-width: 1400px){
 .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
   max-width: 1900px;
-}
-
-.carousel-item img{
-  height: 32rem;
 }
 
 }
