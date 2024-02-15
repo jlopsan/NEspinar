@@ -84,18 +84,15 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         doc.text(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`, xitem, 135);
     }
     else {
-        let subtitulo = items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '');
-        let tamañoSub = subtitulo.length;
-        let pmitadSub = subtitulo.substring(0, tamañoSub / 2);
-        let smitadSub = subtitulo.substring(tamañoSub / 2);
-
-        let longMitadSub = doc.getStringUnitWidth(pmitadSub) * doc.internal.getFontSize();
-        let xPMitadSub = ((anchuraDoc / 2) - (longMitadSub / 2));
-        doc.text(`${pmitadSub} - `, xPMitadSub, 140);
-
-        let longMitadSub2 = doc.getStringUnitWidth(smitadSub) * doc.internal.getFontSize();
-        let xSMitadsub = ((anchuraDoc / 2) - (longMitadSub2 / 2));
-        doc.text(`${smitadSub}`, xSMitadsub, 140 + 20);
+        let arrayItem = doc.splitTextToSize(items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDoc - 100)
+        
+        let yItem = 145;
+        for (let i = 0; i < arrayItem.length; i++) {
+            let longitudMitad = doc.getStringUnitWidth(arrayItem[i])* doc.internal.getFontSize();
+            let xitem = ((anchuraDoc/2)-(longitudMitad/2))
+            doc.text(`${arrayItem[i]}`,xitem,yItem);
+            yItem+= 20;
+        }
     }
 
 
