@@ -89,7 +89,7 @@
                                                                     <!-- Imagen -->   
                                                                     
                                                                     @if($producto->image!=null)
-                                                                    <figure class="img-wrapper" onmousemove="zoom(event)" style="background-image: url('{{asset("storage/$producto->id/mini_$producto->image")}}')">
+                                                                    <figure class="img-wrapper" onmousemove="zoom(event)" ontouchmove="zoom(event)" style="background-image: url('{{asset("storage/$producto->id/mini_$producto->image")}}')">
                                                                         <img id="mi_imagen{{$key}}" class="center-block"
                                                                         src='{{asset("storage/$producto->id/mini_$producto->image")}}'
                                                                         alt="{{$producto->image}}"
@@ -118,7 +118,7 @@
                                                                             <button class="btn btn-outline-secondary fa-solid fa-download mt-3" onclick="download('{{ asset("storage/$producto->id/$image->image")}}' , '{{$image->image}}', '{{$producto->name}}', {{$contador}})">
                                                                         </div>
                                                                         <!-- Imagen -->
-                                                                        <figure class="img-wrapper" onmousemove="zoom(event)" style="background-image: url('{{asset("storage/$producto->id/mini_$image->image")}}')">
+                                                                        <figure class="img-wrapper" onmousemove="zoom(event)" ontouchmove="zoom(event)" style="background-image: url('{{asset("storage/$producto->id/mini_$image->image")}}')">
                                                                         <img id="img_secundaria_{{$producto->id}}_{{$contador}}"
                                                                             src='{{asset("storage/$producto->id/mini_$image->image")}}'
                                                                             class="center-block" height="400"
