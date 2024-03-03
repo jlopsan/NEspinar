@@ -43,7 +43,6 @@ function ponerSubtitulo(doc, items, cordenaday){
 }
 window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
 
-
 // Genera un PDF con los datos del producto y la imagen del carrusel.
 // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
 function imprimir(json_product, image_id, json_items, category, opciones) {
@@ -84,6 +83,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         //SUBTITULO
         ponerSubtitulo(doc,items,90)
 
+
     } else {
         let arrayTitulo = doc.splitTextToSize(product.name,anchuraDoc - 100)
         let ytitulo = 60;
@@ -100,7 +100,6 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
     // ---------------------------------------------------------------------------------------------------FOTOGRAFIAS-------------------------------------------------------------------------
     let imagen = document.getElementById(image_id);
-
     let anchoOriginalPT = imagen.naturalWidth / 1.3;
     let alturaOriginalPT = imagen.naturalHeight / 1.3;
     let ratio = anchoOriginalPT / alturaOriginalPT;
