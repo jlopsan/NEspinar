@@ -55,8 +55,7 @@ class ProductosController extends Controller
     }
 
     //** Esta función guarda una imagen asociada a un producto y crea su miniatura
-    public function saveImage($image, $productId){  
-        $image_name = $image->getClientOriginalName();
+    public function saveImage($image, $productId, $image_name){  
         $image->storeAs("public/$productId", $image_name);
         Storage::setVisibility("public/$productId/$image_name", "public");
 
@@ -75,31 +74,31 @@ class ProductosController extends Controller
 
     //** Funcion que guarda un registro de un producto
     public function store(Request $r) {
-        // dd($r->additional_images);
+        
         $image = $r->file('image');
-        $images = $r->file('images');
         $r->name = self::cleanDataEntry($r->name);
         $p = new Productos(['name' => self::cleanDataEntry($r->name), 'categoria_id' => $r->categoria_id]);
         if (!blank($image)) { //** Si existe una imagen principal esta se guarda
             $p->save();     
-            self::saveImage($image, $p -> id);
-            $image_name = $image->getClientOriginalName();
+            $image_name = "mainImage". ".". $image -> getClientOriginalExtension();
 
-            Storage::setVisibility("public/$p->id/$image_name", "public");
+            self::saveImage($image, $p -> id, $image_name);
         }
         $p->image = $image_name ?? '';
         $p->save();
        
-        if(!blank($images)){//** si existen imagenes extra se guardan
-            foreach($images as $image){
-                $image_name = $image->getClientOriginalName();
+        if(!blank($r -> additional_images)){//** si existen imagenes extra se guardan
+            $counter = 100;
+            foreach($r -> additional_images as $image){
+                $image_name = $counter . ".". $image -> getClientOriginalExtension();
 
                 $newImage = new Imagenes();
                 $newImage->producto_id = $p->id;
                 $newImage->image = $image_name;
                 $newImage->save();
 
-                self::saveImage($image, $p->id);         
+                self::saveImage($image, $p->id, $image_name);    
+                $counter = $counter + 1;     
             }
         }
         if($r->items!=null){
@@ -124,7 +123,11 @@ class ProductosController extends Controller
             $query->where('productos_id', $id);
         }])->get();
         $image = Storage::url("$producto->id/mini_$producto->image");
-        return view('productos.form', compact('producto', 'categorias', 'items', 'image', 'opciones'));
+        $additionalImagesUrls = Imagenes::Where("producto_id", "=", $id)
+        ->select("image")
+        ->orderBy("image")
+        ->get();
+        return view('productos.form', compact('producto', 'categorias', 'items', 'image', 'opciones', 'additionalImagesUrls'));
     }
 
     public function update(Request $r, $id) {   //** Actualiza objetos ya existentes
@@ -138,9 +141,11 @@ class ProductosController extends Controller
             Storage::delete("public/" . $id . "/mini_" . $deleteImage);
 
             $image = $r->file('image');
-            self::saveImage($image, $p->id);
+            $image_name = "mainImage". ".". $image -> getClientOriginalExtension();
 
-            $image_name = $image->getClientOriginalName();
+            self::saveImage($image, $p->id, $image_name);
+
+            
             $p->image = $image_name;
         }
 
@@ -157,7 +162,7 @@ class ProductosController extends Controller
             foreach($images as $image){
 
                 $i_name = $image->getClientOriginalName();
-                self::saveImage($image, $p -> id);
+                self::saveImage($image, $p -> id, $i_name);
                 
                 $img = new Imagenes();
                 $img->producto_id = $p->id;
