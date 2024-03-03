@@ -41,7 +41,7 @@
                                 aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <div class="close-modal" data-bs-dismiss="modal"><svg id="Layer_1" data-name="Layer 1"
+                                        <div class="close-modal" data-bs-dismiss="modal" style="z-index: 99"><svg id="Layer_1" data-name="Layer 1"
                                                 viewBox="0 0 579.74 579.74">
                                                 <defs>
                                                     <style>

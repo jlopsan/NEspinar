@@ -4,27 +4,25 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyScrollLogic(modal) {
         var imgs = modal.querySelectorAll('.img-wrapper img');
         var title = modal.querySelector('h2');
-        var isScrolling = false;
+        var scrollThreshold = 10;
+        var isScrolled = false;
 
         function scrollHandler() {
-            if (!isScrolling) {
-                isScrolling = true;
-                requestAnimationFrame(() => {
-                    for(let i = 0; i < imgs.length; i++) {
-                        if (modal.scrollTop >= 10) {
-                            imgs[i].classList.add('scrolled');
-                            title.classList.add('title-scrolled');
-                        } else {
-                            imgs[i].classList.remove('scrolled');
-                            title.classList.remove('title-scrolled');
-                        }
-                }
-                    isScrolling = false;
-                });
+            if (!isScrolled && modal.scrollTop >= scrollThreshold) {
+                isScrolled = true;
+                imgs.forEach(img => img.classList.add('scrolled'));
+                title.classList.add('title-scrolled');
+            } else if (isScrolled && modal.scrollTop < scrollThreshold) {
+                isScrolled = false;
+                imgs.forEach(img => img.classList.remove('scrolled'));
+                title.classList.remove('title-scrolled');
             }
         }
 
         modal.addEventListener('scroll', scrollHandler);
+
+        modal.scrollTop = 1;
+        scrollHandler(); 
     }
 
     modals.forEach((modal) => {
@@ -32,4 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             applyScrollLogic(modal);
         });
     });
+
+
+
 });

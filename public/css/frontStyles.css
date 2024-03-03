@@ -152,7 +152,7 @@
 
 .img-wrapper img{
   will-change: height;
-  transition: all 0.2s linear;
+  transition: all 0.1s linear;
 }
 
 .campo{
@@ -172,7 +172,7 @@
 }
 
 .modal .title {
-  transition: all 0.2s;
+  transition: all 0.1s;
 }
 
 .title-scrolled {
