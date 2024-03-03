@@ -6,6 +6,24 @@
 
 @section("content")
 
+<style>
+    .imagen-ordenar{
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+	    border: 1px dashed #609dd6;
+    }
+
+    #additional-images div div img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
 @isset($producto)
 <!-- CASO 1: Vamos a hacer update de un producto que ya existe -->
 <form action="{{ route('productos.update', ['producto' => $producto->id]) }}" method="POST" id="formulario" enctype="multipart/form-data">
@@ -57,8 +75,16 @@
             </div> <br>
 
             Fotos Adicionales:
-            <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="">
+{{--             <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="">
 
+            <!-- Campo para la imagen principal -->
+            <input class="form-control" type="file" accept="image/*" name="image" value="{{ $producto->image ?? '' }}"><br> --}}
+
+            <div id="additional-images" style="display: flex; flex-wrap: wrap;">
+
+            </div>
+
+            <button type="button" onclick="agregarImagen()">Agregar imagen</button>
 
             <div id="listItems">
                 @if(isset($items))
@@ -171,14 +197,150 @@
             }
         }
 
-        function activar_btn() {
-            // Desactiva el botón de enviar hasta que se selecciona una categoría
-            if (document.getElementById("categoria_id").value !== "") {
-                document.getElementById("submitButton").disabled = false;
-            } else {
-                document.getElementById("submitButton").disabled = true;
+        // Función para agregar una nueva entrada de imagen al formulario
+        function agregarImagen() {
+            var container = document.getElementById('additional-images');
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.name = 'additional_images[]'; // Cambia esto según tu controlador de Laravel
+
+            // Contenedor para la vista previa de la imagen
+            var previewContainer = document.createElement('div');
+            previewContainer.style.marginBottom = '10px'; // Ajusta el margen inferior del contenedor de vista previa
+            previewContainer.classList.add('imagen-ordenar');
+
+            // Función para mostrar la vista previa de la imagen seleccionada
+            input.addEventListener('change', function(event) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100%'; // Ajustar el tamaño máximo de la imagen
+                        previewContainer.innerHTML = ''; // Limpiar la vista previa antes de agregar una nueva imagen
+                        previewContainer.appendChild(img);
+                        previewContainer.style.display = 'block'; // Mostrar la vista previa de la imagen
+                        input.style.display = 'none'; // Ocultar el campo de entrada de la imagen
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            });
+
+            // Función para volver a mostrar el campo de entrada de la imagen al hacer clic en la vista previa
+            previewContainer.addEventListener('click', function() {
+                previewContainer.style.display = 'none'; // Ocultar la vista previa de la imagen
+                input.style.display = 'block'; // Mostrar el campo de entrada de la imagen
+                input.value = ''; // Restablecer el valor del campo de entrada para permitir la selección de una nueva imagen
+            });
+
+            // Botones de flechas para reordenar
+            var leftButton = document.createElement('button');
+            leftButton.type = 'button'; // Especificar tipo de botón
+            leftButton.textContent = '←';
+            leftButton.onclick = function() {
+                moverImagen(input, -1);
+            };
+            var rightButton = document.createElement('button');
+            rightButton.type = 'button'; // Especificar tipo de botón
+            rightButton.textContent = '→';
+            rightButton.onclick = function() {
+                moverImagen(input, 1);
+            };
+
+            // Contenedor para los botones de flechas
+            var buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.appendChild(leftButton);
+            buttonContainer.appendChild(rightButton);
+
+            // Contenedor para la imagen y los botones de flechas
+            var imageContainer = document.createElement('div');
+            imageContainer.style.display = 'flex';
+            imageContainer.style.flexDirection = 'column'; // Alinear elementos verticalmente
+            imageContainer.appendChild(input);
+            imageContainer.appendChild(previewContainer); // Agregar la vista previa de la imagen
+            imageContainer.appendChild(buttonContainer);
+
+            container.appendChild(imageContainer);
+        }
+
+
+        // Función para reordenar una imagen
+        function moverImagen(input, delta) {
+            var container = input.parentNode.parentNode;
+            var index = Array.prototype.indexOf.call(container.children, input.parentNode);
+
+            if (delta < 0 && index > 0) {
+                container.insertBefore(container.children[index], container.children[index - 1]);
+            } else if (delta > 0 && index < container.children.length - 1) {
+                container.insertBefore(container.children[index + 1], container.children[index]);
             }
         }
+
+        // Función para activar el botón de envío cuando se selecciona al menos una categoría
+        function activar_btn() {
+            var submitButton = document.getElementById('submitButton');
+            var categoria_id = document.getElementById('categoria_id').value;
+            if (categoria_id !== "") {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        /* // Llama a la función de activación del botón cuando se selecciona una categoría
+        document.getElementById('categoria_id').addEventListener('change', activar_btn); */
+
+        function mostrarVistaPrevia(event) {
+        var input = event.target;
+        
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                var previewContainer = document.getElementById('preview-container');
+                previewContainer.innerHTML = ''; // Limpiar la vista previa antes de agregar una nueva imagen
+                
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%'; // Ajustar el tamaño máximo de la imagen
+                previewContainer.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Función para reordenar una imagen
+    function moverImagen(input, delta) {
+        var container = input.parentNode.parentNode;
+        var index = Array.prototype.indexOf.call(container.children, input.parentNode);
+
+        if (delta < 0 && index > 0) {
+            container.insertBefore(container.children[index], container.children[index - 1]);
+        } else if (delta > 0 && index < container.children.length - 1) {
+            container.insertBefore(container.children[index + 1], container.children[index]);
+        }
+
+        // Actualizar el valor de los inputHidden con los nuevos IDs de imagen
+        actualizarIdsImagenes(container);
+    }
+
+    // Función para actualizar los IDs de las imágenes después de reordenarlas
+    function actualizarIdsImagenes(container) {
+        var images = container.querySelectorAll('input[type="file"]');
+        images.forEach(function(image, index) {
+            var newId = 'image_' + index;
+            image.id = newId;
+            // Actualizar el valor de los inputHidden
+            var hiddenInput = image.nextElementSibling; // Obtener el siguiente elemento que es el inputHidden
+            hiddenInput.value = newId;
+        });
+    }
+    
 
     </script>
 

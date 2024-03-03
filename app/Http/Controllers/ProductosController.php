@@ -75,6 +75,7 @@ class ProductosController extends Controller
 
     //** Funcion que guarda un registro de un producto
     public function store(Request $r) {
+        // dd($r->additional_images);
         $image = $r->file('image');
         $images = $r->file('images');
         $r->name = self::cleanDataEntry($r->name);
