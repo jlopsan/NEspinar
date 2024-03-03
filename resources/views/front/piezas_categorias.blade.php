@@ -58,12 +58,13 @@
                                             </svg></div>
                                         <div class="container">
                                             <div class="row justify-content-center">
-                                                <div class="col-lg-12">
+                                                <div class="col-lg-12 p-0">
                                                     <div class="modal-body">
                                                         <!-- Project details-->
-                                                        <h2 class="title text-uppercase pb-4">{{$producto->name}}</h2>
+                                                        
                                                         <div id="carouselExampleIndicators{{$key}}"
                                                             class="carousel carousel-dark slide" data-bs-ride="true">
+                                                            <h2 class="title text-uppercase pb-4">{{$producto->name}}</h2>
                                                             <!-- Indicadores de las imagenes (flechas) -->
                                                             <div class="carousel-indicators">
                                                                 <button type="button"
@@ -145,15 +146,19 @@
                                                             </button> 
                                                             @endif
                                                         </div>
-                                                        <div class='items' style="padding-left: 25%; padding-right: 20%; text-align: left">
+                                                        <div class='items' style="padding-left: 17%; padding-right: 17%; text-align: left">
+                                                            @if(count($producto->items) > 0)
                                                             @foreach ($producto->items as $item)
-                                                                <strong>{!! $item->name !!}:</strong>
-                                                                <div class="truncar">{!! $item->pivot->value !!}
-
-                                                                </div>
-                                                                <br>
+                                                            <div class="campo">
+                                                                <p><strong>{!! $item->name !!}:</strong></p>
+                                                                
+                                                                <div class="truncar">{!! $item->pivot->value !!}</div>
+                                                            </div>
+                                                            <hr>
                                                             @endforeach
-
+                                                            @else
+                                                            <p style="text-align: center">No existen campos registrados para esta pieza</p>
+                                                            @endif
                                                             <!--
                                                             <button class="btn btn-outline-secondary fa-solid fa-print mt-3" onclick="javascript:window.print()">
                                                             <button class="btn btn-outline-secondary fa-solid fa-download mt-3" onclick="download('{{asset("storage/$producto->id/$producto->image")}}','{{$producto->image}}')">
@@ -226,6 +231,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.1/purify.min.js"></script>
 <script src="/js/pdf-descarga.js"></script> 
 <script src="/js/zoom.js"></script>
+<script src="/js/scrollAnimation.js"></script>
 
 <!-- <script>
 

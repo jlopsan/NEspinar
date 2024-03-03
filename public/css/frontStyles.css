@@ -1,3 +1,7 @@
+* {
+  scroll-behavior: auto;
+}
+
 .content-wrapper {
     padding: 0em 5em 10em 5em;
 }
@@ -103,13 +107,27 @@
 }
 
 .portfolio-modal {
-  margin: 1em;
-  margin-bottom: 100px;
+  margin: 0em;
+  margin-bottom: 1rem;
+}
+
+.modal-body {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .modal-content {
   padding-bottom: 2em;
-  margin-bottom: 3em;
+  margin-bottom: 1em;
+}
+
+.carousel {
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid black;
+  margin-bottom: 3rem;
 }
 
 .img-wrapper {
@@ -124,7 +142,7 @@
 
 .img-wrapper img {
   margin-bottom: 0 !important;
-  height: 24rem;
+  height: 26rem;
   border-radius: 4px;
 }
 
@@ -133,7 +151,39 @@
 }
 
 .img-wrapper img{
-  transition: opacity 0.5s;
+  will-change: height;
+  transition: all 0.2s linear;
+}
+
+.campo{
+  margin-bottom: 2.5rem;
+}
+
+.campo p {
+  margin-bottom: 1rem !important;
+}
+
+.items {
+  font-size: 1.8rem;
+}
+
+.truncar {
+  font-size: 1.3rem;
+}
+
+.modal .title {
+  transition: all 0.2s;
+}
+
+.title-scrolled {
+  font-size: 1.5rem !important;
+  padding-top: 0.75rem !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0rem !important;
+}
+
+.scrolled {
+  height: 14rem !important;
 }
 
 @media (min-width: 1920px) {
@@ -150,10 +200,6 @@
 }
 
 @media (max-width: 991px) {
-  .carousel-item img{
-    width: 100%;
-    height: auto;
-  }
   .content-wrapper {
     padding-top: 3em;
   }
@@ -169,6 +215,21 @@
 }
 
 @media (max-width:600px) {
+  .carousel-item img{
+    width: 100% !important;
+    height: auto !important;
+  }
+  .img-wrapper {
+    width: 70% !important;
+  }
+  .modal-body{
+    padding-left: 1em !important;
+    padding-right: 1em !important;
+  }
+  .items {
+    padding: 0 !important;
+    overflow: hidden;
+  }
   .info-adicional {
     padding-bottom: 6em;
   }
