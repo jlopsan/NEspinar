@@ -71,6 +71,9 @@ class ProductosController extends Controller
         $miniatura_name = 'mini_' . $image_name;
         $miniatura->save(storage_path("app/public/$productId/$miniatura_name"));
         Storage::setVisibility("public/$productId/$miniatura_name", "public");
+
+        $folderPath = storage_path("app/public/$productId");
+        chmod($folderPath, 0755);
     }
 
     //** Funcion que guarda un registro de un producto
