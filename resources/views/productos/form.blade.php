@@ -57,7 +57,7 @@
             </div> <br>
 
             Fotos Adicionales:
-            <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="">
+            <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="" multiple>
 
 
             <div id="listItems">
