@@ -126,7 +126,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid black;
   margin-bottom: 3rem;
 }
 
@@ -152,7 +152,7 @@
 
 .img-wrapper img{
   will-change: height;
-  transition: all 0.1s linear;
+  transition: all 0.2s ease-in-out;
 }
 
 .campo{
@@ -172,18 +172,18 @@
 }
 
 .modal .title {
-  transition: all 0.1s;
+  transition: all 0.2s ease-in-out;
 }
 
 .title-scrolled {
-  font-size: 1.5rem !important;
-  padding-top: 0.75rem !important;
+  font-size: 1.25rem !important;
+  padding-top: 0.25rem !important;
   margin-bottom: 0 !important;
   padding-bottom: 0rem !important;
 }
 
 .scrolled {
-  height: 14rem !important;
+  height: 9rem !important;
 }
 
 @media (min-width: 1920px) {
