@@ -87,11 +87,10 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
 
     if (doc.getTextDimensions(`${items[0].pivot.value}`).w < anchuraDoc) {
-        doc.text(`${eliminarEtiquetasHTML(items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''))}`, xitem, 135);
+        doc.text(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`, xitem, 135);
     }
     else {
-        let arrayItem = doc.splitTextToSize(items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDoc - 100)
-        
+        let arrayItem = doc.splitTextToSize(eliminarEtiquetasHTML(items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')),anchuraDoc - 100)
         let yItem = 145;
         for (let i = 0; i < arrayItem.length; i++) {
             let longitudMitad = doc.getStringUnitWidth(arrayItem[i])* doc.internal.getFontSize();
