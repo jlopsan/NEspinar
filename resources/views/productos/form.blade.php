@@ -60,19 +60,6 @@
             @endif
             <input class="form-control" type="file" accept="image/*" name="image" value="{{$producto->image ?? '' }}"><br>
 
-            <div id="image" class="row">
-                @if (isset($producto))
-                @foreach($producto->imagenes as $image)
-                <div class="image-item d-flex justify-content-center align-items-center col-sm-2" onclick="deleteItem(this)">
-                    <img src="/storage/{{$producto->id}}/mini_{{$image->image}}" width="150">
-                    <input value="{{$image->image}}" class="inputDelete" name="images[]" type="hidden">
-                    <i class="fa-solid fa-trash fs-1 btnDelete"></i>
-                </div>
-                @endforeach
-                @endif
-                <div id="deleteImages">
-                </div>
-            </div> <br>
 
             Fotos Adicionales:
 {{--             <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="">
@@ -131,6 +118,43 @@
     @endsection
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            downloadImages(@json($images))
+            .then(images => {
+                console.log('Imágenes descargadas:', images);
+                images.forEach(function(image){
+                    agregarImagen(image);
+                    console.log(image);
+                });
+            })
+            .catch(error => {
+                console.error('Error al descargar las imágenes:', error);
+            });
+        });
+
+        async function downloadImages(urls) {
+            const images = [];
+
+            console.log(urls);
+
+            // Iterar sobre cada URL en el array
+            for (const url of urls) {
+                // Hacer una solicitud para descargar la imagen
+                const response = await fetch(url);
+                const blob = await response.blob();
+
+                // Crear un objeto File a partir de la imagen descargada
+                const filename = url.substring(url.lastIndexOf('/') + 1);
+                const file = new File([blob], filename, { type: blob.type });
+
+                // Agregar el archivo al array de imágenes descargadas
+                images.push(file);
+            }
+
+            // Retornar el array de imágenes descargadas
+            return images;
+        } 
+
         var editor = []; // Creamos un array para guardar los editores de texto wysiwyg
 
         // Esta función se ejecuta cuando se selecciona una categoría. Carga de forma asíncrona todos los ítems de 
@@ -198,7 +222,7 @@
         }
 
         // Función para agregar una nueva entrada de imagen al formulario
-        function agregarImagen() {
+        function agregarImagen(file=null) {
             var container = document.getElementById('additional-images');
             var input = document.createElement('input');
             input.type = 'file';
@@ -210,8 +234,26 @@
             previewContainer.style.marginBottom = '10px'; // Ajusta el margen inferior del contenedor de vista previa
             previewContainer.classList.add('imagen-ordenar');
 
+            function previewImage(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100%'; // Ajustar el tamaño máximo de la imagen
+                        previewContainer.innerHTML = ''; // Limpiar la vista previa antes de agregar una nueva imagen
+                        previewContainer.appendChild(img);
+                        previewContainer.style.display = 'block'; // Mostrar la vista previa de la imagen
+                        input.style.display = 'none'; // Ocultar el campo de entrada de la imagen
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
             // Función para mostrar la vista previa de la imagen seleccionada
-            input.addEventListener('change', function(event) {
+            input.addEventListener('change', function(event){
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();
 
@@ -265,6 +307,13 @@
             imageContainer.appendChild(buttonContainer);
 
             container.appendChild(imageContainer);
+
+            if(file){
+                const fileList = new DataTransfer();
+                fileList.items.add(file);
+                input.files = fileList.files;
+                previewImage(input);
+            }
         }
 
 

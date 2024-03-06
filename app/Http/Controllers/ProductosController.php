@@ -127,10 +127,14 @@ class ProductosController extends Controller
         }])->get();
         $image = Storage::url("$producto->id/mini_$producto->image");
         $additionalImagesUrls = Imagenes::Where("producto_id", "=", $id)
-        ->select("image")
-        ->orderBy("image")
-        ->get();
-        return view('productos.form', compact('producto', 'categorias', 'items', 'image', 'opciones', 'additionalImagesUrls'));
+            ->select("image")
+            ->orderBy("image")
+            ->get();
+        $images=[];
+        foreach($additionalImagesUrls as $image){
+            array_push($images, Storage::url("$producto->id/$image->image"));
+        }
+        return view('productos.form', compact('producto', 'categorias', 'items', 'image', 'opciones', 'additionalImagesUrls', 'images'));
     }
 
     public function update(Request $r, $id) {   //** Actualiza objetos ya existentes
@@ -148,7 +152,6 @@ class ProductosController extends Controller
 
             self::saveImage($image, $p->id, $image_name);
 
-            
             $p->image = $image_name;
         }
 
