@@ -8,7 +8,7 @@
         <section class="page-section" id="portfolio"
             >
             <div class="filter" style="background-color: {{$opciones['color_cat_activa']}}; font-family:{{$opciones['tipografia1']}}">
-                <span>Contenido categorizado por campo: <strong>{{$nombreItem}}</strong></span>
+                <span style="color: {{$opciones['color_titulo_subtitulo']}}">Contenido categorizado por campo: <strong>{{$nombreItem}}</strong></span>
             </div>
             <div class="losas-wrapper" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
