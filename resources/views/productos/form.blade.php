@@ -53,9 +53,9 @@
             </select> <br>
             Nombre :<input required class="form-control" type="text" name="name" value="{{$producto->name ?? '' }}" id="categoria_id"><br>
             Foto principal:
-            @if(isset($image))
+            @if(isset($mainImage))
             <div id="image">
-                <img src="{{$image}}" width=150>
+                <img src="{{$mainImage}}" width=150>
             </div> <br>
             @endif
             <input class="form-control" type="file" accept="image/*" name="image" value="{{$producto->image ?? '' }}"><br>
@@ -71,7 +71,7 @@
 
             </div>
 
-            <button type="button" onclick="agregarImagen()">Agregar imagen</button>
+            <button type="button" class="btn btn-dark center mt-3" onclick="agregarImagen()">Agregar imagen</button>
 
             <div id="listItems">
                 @if(isset($items))
@@ -118,19 +118,22 @@
     @endsection
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            downloadImages(@json($images))
-            .then(images => {
-                console.log('Imágenes descargadas:', images);
-                images.forEach(function(image){
-                    agregarImagen(image);
-                    console.log(image);
+        @isset($images)
+            document.addEventListener('DOMContentLoaded', function() {
+                downloadImages(@json($images))
+                .then(images => {
+                    console.log('Imágenes descargadas:', images);
+                    images.forEach(function(image){
+                        agregarImagen(image);
+                        console.log(image);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al descargar las imágenes:', error);
                 });
-            })
-            .catch(error => {
-                console.error('Error al descargar las imágenes:', error);
             });
-        });
+        @endisset
+
 
         async function downloadImages(urls) {
             const images = [];
@@ -225,14 +228,25 @@
         function agregarImagen(file=null) {
             var container = document.getElementById('additional-images');
             var input = document.createElement('input');
+            input.style = "display: none";
             input.type = 'file';
             input.accept = 'image/*';
             input.name = 'additional_images[]'; // Cambia esto según tu controlador de Laravel
 
             // Contenedor para la vista previa de la imagen
             var previewContainer = document.createElement('div');
-            previewContainer.style.marginBottom = '10px'; // Ajusta el margen inferior del contenedor de vista previa
+            previewContainer.style = 'margin: 0 auto 10px'; // Ajusta el margen inferior del contenedor de vista previa
             previewContainer.classList.add('imagen-ordenar');
+
+            previewTextFlex = document.createElement('div');
+            previewTextFlex.style = "display: flex;  justify-content: center; align-content: center; padding: 5px; text-align: center";
+ 
+            previewText = document.createElement('p');
+            previewText.innerHTML = "Inserta una imagen";
+
+            previewTextFlex.appendChild(previewText);
+
+            previewContainer.appendChild(previewTextFlex);
 
             function previewImage(input) {
                 if (input.files && input.files[0]) {
@@ -273,23 +287,33 @@
 
             // Función para volver a mostrar el campo de entrada de la imagen al hacer clic en la vista previa
             previewContainer.addEventListener('click', function() {
-                previewContainer.style.display = 'none'; // Ocultar la vista previa de la imagen
-                input.style.display = 'block'; // Mostrar el campo de entrada de la imagen
-                input.value = ''; // Restablecer el valor del campo de entrada para permitir la selección de una nueva imagen
+                input.click()
             });
 
             // Botones de flechas para reordenar
             var leftButton = document.createElement('button');
             leftButton.type = 'button'; // Especificar tipo de botón
             leftButton.textContent = '←';
+            leftButton.classList = "btn btn-secondary"
+            leftButton.style = "margin: 1px"
             leftButton.onclick = function() {
                 moverImagen(input, -1);
             };
             var rightButton = document.createElement('button');
             rightButton.type = 'button'; // Especificar tipo de botón
             rightButton.textContent = '→';
+            rightButton.classList = "btn btn-secondary"
+            rightButton.style = "margin: 1px"
             rightButton.onclick = function() {
                 moverImagen(input, 1);
+            };
+
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.classList = "btn btn-danger center";
+            deleteButton.style = "margin: 1px"
+            deleteButton.onclick = function() {
+                imageContainer.remove();
             };
 
             // Contenedor para los botones de flechas
@@ -297,11 +321,14 @@
             buttonContainer.style.display = 'flex';
             buttonContainer.appendChild(leftButton);
             buttonContainer.appendChild(rightButton);
+            buttonContainer.appendChild(deleteButton);
 
             // Contenedor para la imagen y los botones de flechas
             var imageContainer = document.createElement('div');
             imageContainer.style.display = 'flex';
             imageContainer.style.flexDirection = 'column'; // Alinear elementos verticalmente
+            imageContainer.style.margin = '10px'; // Alinear elementos verticalmente
+            imageContainer.style.justifyContent = 'center'; // Alinear elementos verticalmente
             imageContainer.appendChild(input);
             imageContainer.appendChild(previewContainer); // Agregar la vista previa de la imagen
             imageContainer.appendChild(buttonContainer);

@@ -125,7 +125,7 @@ class ProductosController extends Controller
         $items = Items::where('categoria_id', $producto->categoria_id)->orderBy('order')->with(['itemsProducto' => function($query) use ($id){
             $query->where('productos_id', $id);
         }])->get();
-        $image = Storage::url("$producto->id/mini_$producto->image");
+        $mainImage = Storage::url("$producto->id/mini_$producto->image");
         $additionalImagesUrls = Imagenes::Where("producto_id", "=", $id)
             ->select("image")
             ->orderBy("image")
@@ -134,7 +134,7 @@ class ProductosController extends Controller
         foreach($additionalImagesUrls as $image){
             array_push($images, Storage::url("$producto->id/$image->image"));
         }
-        return view('productos.form', compact('producto', 'categorias', 'items', 'image', 'opciones', 'additionalImagesUrls', 'images'));
+        return view('productos.form', compact('producto', 'categorias', 'items', 'mainImage', 'opciones', 'additionalImagesUrls', 'images'));
     }
 
     public function update(Request $r, $id) {   //** Actualiza objetos ya existentes
@@ -155,28 +155,32 @@ class ProductosController extends Controller
             $p->image = $image_name;
         }
 
-        $deleteImages = $r->deleteImages ?? []; //** borra imagenes secundarias
-        foreach($deleteImages as $di){
-            $img = Imagenes::where('image', $di)->where('producto_id', $p->id)->first();
-            Storage::delete("public/" . $img->producto_id . "/" . $di);
-            Storage::delete("public/" . $img->producto_id . "/mini_" . $di);
+        $deleteImages = Imagenes::Where("producto_id", "=", $id)
+            ->orderBy("image")
+            ->get();
+
+        foreach($deleteImages as $img){
+            
+            Storage::delete("public/" . $img->producto_id . "/" . $img->image);
+            Storage::delete("public/" . $img->producto_id . "/mini_" . $img->image);
             $img->delete();
         }
 
-        $images = $r->file('images');
-        if(!blank($images)){            //** Guarda imágenes nuevas
-            foreach($images as $image){
+        if(!blank($r -> additional_images)){//** si existen imagenes extra se guardan
+            $counter = 100;
+            foreach($r -> additional_images as $image){
+                $image_name = $counter . ".". $image -> getClientOriginalExtension();
 
-                $i_name = $image->getClientOriginalName();
-                self::saveImage($image, $p -> id, $i_name);
-                
-                $img = new Imagenes();
-                $img->producto_id = $p->id;
-                $img->image = $i_name;
-                $img->save();           
+                $newImage = new Imagenes();
+                $newImage->producto_id = $p->id;
+                $newImage->image = $image_name;
+                $newImage->save();
+
+                self::saveImage($image, $p->id, $image_name);    
+                $counter = $counter + 1;     
             }
         }
-       
+
         foreach($r->items as $item){ 
             $itemProducto = ItemsProductos::where('items_id', $item['id'])->where('productos_id', $id)->first() ?? new ItemsProductos(); //** primero busca si existe el items_producto, si no existe crea uno nuevo
             
