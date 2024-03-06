@@ -15,21 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyScrollLogic(modal) {
         var imgs = modal.querySelectorAll('.img-wrapper img');
         var carousel = modal.querySelector('.carousel');
+        var campos = modal.querySelector('.items');
         var title = modal.querySelector('h2');
         var scrollThreshold = 50;
         var isScrolled = false;
 
         function scrollHandler() {
+            campos.addEventListener('click', mouseOutHandler);
             if (!isScrolled && modal.scrollTop >= scrollThreshold) {
                 isScrolled = true;
                 addScrolled(imgs, title);
-                carousel.addEventListener('mouseover', mouseOverHandler);
-                carousel.addEventListener('mouseout', mouseOutHandler);
+                carousel.addEventListener('click', mouseOverHandler);
             } else if (modal.scrollTop < scrollThreshold) {
                 isScrolled = false;
                 removeScrolled(imgs, title); 
-                carousel.removeEventListener('mouseover', mouseOverHandler);
-                carousel.removeEventListener('mouseout', mouseOutHandler);
+                carousel.removeEventListener('click', mouseOverHandler);
             }
         }
 
@@ -38,6 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         function mouseOutHandler() {
+            if(modal.scrollTop < scrollThreshold) {
+                modal.scrollTop = scrollThreshold + 1;
+            }
             addScrolled(imgs, title);
         }
 

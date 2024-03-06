@@ -170,7 +170,7 @@
 
 .img-wrapper img{
   will-change: height;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s linear;
 }
 
 .campo{
@@ -191,7 +191,7 @@
 
 .modal .title {
   padding-bottom: 0rem !important;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s linear;
 }
 
 .title-scrolled {
