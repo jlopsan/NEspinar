@@ -36,25 +36,43 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
     const anchuraDoc = doc.internal.pageSize.getWidth();
     const alturaDoc = doc.internal.pageSize.getHeight();
     const anchuraDocWM = anchuraDoc - 60
-    const margenEntreItem = 10;
 
+    /*
+    Coordenadas Paginacion. 
+    Esquina superior izquierda: (0, 0)
+    Esquina superior derecha: (210 mm, 0)
+    Esquina inferior izquierda: (0, 297 mm)
+    Esquina inferior derecha: (210 mm, 297 mm)
+    72  puntos pulgada. 25.4 mm /1 pulgada.
+    72/25.4 = 2.834
+    */
 
     // BANNER ARRIBA---------------------------------------------------------------------------------------
-    agregarBanner(doc,opcionesJS);
+    doc.setFont(fontName);
+    doc.setFontSize(9);
+    doc.text(opcionesJS.home_titulo, 35, 33);
+    let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+    let margenBanner = 25;
+    let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+    let margenEntreItem = 10;
+    doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+    doc.line(0, 42.51, 595.14, 42.51);
 
 
     // TITULO DEL PRODUCTO---------------------------------------------------------------------------------
     doc.setFont(fontNameTitulos);
-    doc.setFontSize(25);
+    doc.setFontSize(30);
 
     let longitudProductName = doc.getStringUnitWidth(`${product.name}`) * doc.internal.getFontSize(); //Calcula el tamaño del titulo
     let xProdName = ((anchuraDoc / 2) - (longitudProductName / 2)) //Calcula la coordenada de inicio del titulo para que este siempre centrado
+
 
     if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc - 50) {
         doc.text(`${eliminarEtiquetasHTML(product.name)}`, xProdName, 82);
     } else {
         let arrayTitulo = doc.splitTextToSize(product.name,anchuraDoc - 100)
-        let ytitulo = 60;
+        
+        let ytitulo = 82;
         for (let i = 0; i < arrayTitulo.length; i++) {
             let longitudMitad = doc.getStringUnitWidth(arrayTitulo[i])* doc.internal.getFontSize();
             let xtitulo = ((anchuraDoc/2)-(longitudMitad/2))
@@ -85,6 +103,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
     // ---------------------------------------------------------------------------------------------------FOTOGRAFIAS-------------------------------------------------------------------------
     let imagen = document.getElementById(image_id);
+
     let anchoOriginalPT = imagen.naturalWidth / 1.3;
     let alturaOriginalPT = imagen.naturalHeight / 1.3;
     let ratio = anchoOriginalPT / alturaOriginalPT;
@@ -137,7 +156,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                             }
                             else{
                                 doc.addPage();
-                                agregarBanner(doc,opcionesJS);
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
 
                                 doc.setFontSize(12)
                                 doc.setFont(fontName);
@@ -191,7 +217,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
             } else {
 
                 doc.addPage();
-                agregarBanner(doc,opcionesJS);
+                doc.setFont(fontName);
+                doc.setFontSize(9);
+                doc.text(opcionesJS.home_titulo, 35, 33);
+                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                let margenBanner = 25;
+                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                doc.line(0, 42.51, 595.14, 42.51);
 
                 doc.setFontSize(12)
                 doc.setFont(fontName);
@@ -219,7 +252,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                             }
                             else{
                                 doc.addPage();
-                                agregarBanner(doc,opcionesJS);
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
 
                                 doc.setFontSize(12)
                                 doc.setFont(fontName);
@@ -309,7 +349,15 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                             }
                             else{
                                 doc.addPage();
-                                agregarBanner(doc,opcionesJS);
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
+
                                 doc.setFontSize(12)
                                 doc.setFont(fontName);
 
@@ -357,7 +405,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
             } else {
 
                 doc.addPage();
-                agregarBanner(doc,opcionesJS);
+                doc.setFont(fontName);
+                doc.setFontSize(9);
+                doc.text(opcionesJS.home_titulo, 35, 33);
+                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                let margenBanner = 25;
+                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                doc.line(0, 42.51, 595.14, 42.51);
 
                 doc.setFontSize(12)
                 doc.setFont(fontName);
@@ -385,7 +440,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                             }
                             else{
                                 doc.addPage();
-                                agregarBanner(doc,opcionesJS);
+                                doc.setFont(fontName);
+                                doc.setFontSize(9);
+                                doc.text(opcionesJS.home_titulo, 35, 33);
+                                let longitudST = doc.getStringUnitWidth(opcionesJS.home_subtitulo) * doc.internal.getFontSize();
+                                let margenBanner = 25;
+                                let posicionXSubtitulo = anchuraDoc - longitudST - margenBanner;
+                                doc.text(opcionesJS.home_subtitulo, posicionXSubtitulo, 33);
+                                doc.line(0, 42.51, 595.14, 42.51);
 
                                 doc.setFontSize(12)
                                 doc.setFont(fontName);
