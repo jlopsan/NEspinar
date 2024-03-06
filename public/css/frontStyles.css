@@ -1,5 +1,5 @@
 * {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
 }
 
 .losas-wrapper {
@@ -139,13 +139,34 @@
   margin-bottom: 1em;
 }
 
-.carousel {
-  background-color: #fff;
+.carousel-sticky {
   position: sticky;
   top: 0;
+  z-index: 15;
+}
+
+.carousel-wrapper {
+  position: relative;
+  margin-bottom: 5rem;
+}
+
+.flecha {
+  position: absolute; 
+  top: 100%; 
+  left: 50%; 
+  transform: translate(-50%,0);
+  cursor: pointer;
+  padding: 12px 15px;
+  font-size: 2rem;
+  width: 60px;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+
+.carousel {
+  background-color: #fff;
   z-index: 10;
   border-bottom: 1px solid black;
-  margin-bottom: 3rem;
 }
 
 .img-wrapper {

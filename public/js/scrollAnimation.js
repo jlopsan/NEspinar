@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     var modals = document.querySelectorAll('.modal');
 
-    // Definir funciones de flecha para addScrolled y removeScrolled
+    // Define las funciones de addScrolled y removeScrolled
     const addScrolled = (imgs, title) => {
         imgs.forEach(img => img.classList.add('scrolled'));
         title.classList.add('title-scrolled');
@@ -15,50 +15,60 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyScrollLogic(modal) {
         var imgs = modal.querySelectorAll('.img-wrapper img');
         var carousel = modal.querySelector('.carousel');
-        var campos = modal.querySelector('.items');
+        var flecha = modal.querySelector('.flecha');
         var title = modal.querySelector('h2');
         var scrollThreshold = 50;
         var isScrolled = false;
+        var isImageLarge = false;
+
+        function toggleScrollState() {
+            isImageLarge = !isImageLarge;
+
+            if (isImageLarge) {
+                flecha.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
+                addScrolled(imgs, title);
+                if (modal.scrollTop < scrollThreshold) {
+                    modal.scrollTop = scrollThreshold + 10;
+                }
+            } else {
+                flecha.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
+                removeScrolled(imgs, title);
+            }
+        }
 
         function scrollHandler() {
-            campos.addEventListener('click', mouseOutHandler);
             if (!isScrolled && modal.scrollTop >= scrollThreshold) {
                 isScrolled = true;
+                isImageLarge = true;
                 addScrolled(imgs, title);
-                carousel.addEventListener('click', mouseOverHandler);
+                flecha.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
             } else if (modal.scrollTop < scrollThreshold) {
                 isScrolled = false;
-                removeScrolled(imgs, title); 
-                carousel.removeEventListener('click', mouseOverHandler);
+                isImageLarge = false;
+                removeScrolled(imgs, title);
+                flecha.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
             }
         }
 
-        function mouseOverHandler() {
-            removeScrolled(imgs, title);
-        }
+        // Agregar el event listener al botón de flecha
+        flecha.addEventListener('click', toggleScrollState);
 
-        function mouseOutHandler() {
-            if(modal.scrollTop < scrollThreshold) {
-                modal.scrollTop = scrollThreshold + 1;
-            }
-            addScrolled(imgs, title);
-        }
+        // Agregar el event listener al modal cuando se muestra
+        modal.addEventListener('shown.bs.modal', () => {
+            modal.addEventListener('scroll', scrollHandler);
+        });
 
-        modal.addEventListener('scroll', scrollHandler);
-
-        // Eliminar los event listeners cuando se cierra el modal
+        // Eliminar el event listener del modal cuando se oculta
         modal.addEventListener('hidden.bs.modal', () => {
             modal.removeEventListener('scroll', scrollHandler);
-            carousel.removeEventListener('mouseover', mouseOverHandler);
-            carousel.removeEventListener('mouseout', mouseOutHandler);
         });
 
-        scrollHandler(); 
+        // Inicializar el estado del scroll
+        scrollHandler();
     }
 
+    // Aplicar la lógica de scroll a cada modal
     modals.forEach((modal) => {
-        modal.addEventListener('shown.bs.modal', () => {
-            applyScrollLogic(modal);
-        });
+        applyScrollLogic(modal);
     });
 });
