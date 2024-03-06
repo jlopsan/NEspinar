@@ -4,10 +4,13 @@
 @section('content')
 
 
-    <div id="page-top" class="content-wrapper">
-        <section class="page-section mt-3" id="portfolio"
+    <div id="page-top">
+        <section class="page-section" id="portfolio"
             >
-            <div class="" style="font-family: {{$opciones['tipografia3']}}">
+            <div class="filter" style="background-color: {{$opciones['color_cat_activa']}}; font-family:{{$opciones['tipografia1']}}">
+                <span>Contenido categorizado por campo: <strong>{{$nombreItem}}</strong></span>
+            </div>
+            <div class="losas-wrapper" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
                     @if (isset($msg) && !blank($msg))
                     <div class="text-center">

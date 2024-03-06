@@ -4,7 +4,7 @@
         <section class="page-section mt-3" id="portfolio"
             style="--paginacion: {{ $opciones['paginacion_color'] }}; ">
 
-            <div class="content-wrapper" style="font-family: {{$opciones['tipografia3']}}">
+            <div class="losas-wrapper" style="font-family: {{$opciones['tipografia3']}}">
                 <div class="grid">
                     
                     @if (isset($msg) && !blank($msg))
