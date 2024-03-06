@@ -150,7 +150,7 @@
                                                             @if(count($producto->items) > 0)
                                                             @foreach ($producto->items as $item)
                                                             <div class="campo">
-                                                                <p><strong>{!! $item->name !!}:</strong></p>
+                                                                <p style="color:{{$opciones['color_cat_activa']}}; font-family:{{$opciones['tipografia2']}}"><strong>{!! $item->name !!}:</strong></p>
                                                                 
                                                                 <div class="truncar">{!! $item->pivot->value !!}</div>
                                                             </div>
