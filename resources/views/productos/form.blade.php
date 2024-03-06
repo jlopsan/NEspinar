@@ -6,6 +6,24 @@
 
 @section("content")
 
+<style>
+    .imagen-ordenar{
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+	    border: 1px dashed #609dd6;
+    }
+
+    #additional-images div div img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
 @isset($producto)
 <!-- CASO 1: Vamos a hacer update de un producto que ya existe -->
 <form action="{{ route('productos.update', ['producto' => $producto->id]) }}" method="POST" id="formulario" enctype="multipart/form-data">
@@ -35,30 +53,25 @@
             </select> <br>
             Nombre :<input required class="form-control" type="text" name="name" value="{{$producto->name ?? '' }}" id="categoria_id"><br>
             Foto principal:
-            @if(isset($image))
+            @if(isset($mainImage))
             <div id="image">
-                <img src="{{$image}}" width=150>
+                <img src="{{$mainImage}}" width=150>
             </div> <br>
             @endif
             <input class="form-control" type="file" accept="image/*" name="image" value="{{$producto->image ?? '' }}"><br>
 
-            <div id="image" class="row">
-                @if (isset($producto))
-                @foreach($producto->imagenes as $image)
-                <div class="image-item d-flex justify-content-center align-items-center col-sm-2" onclick="deleteItem(this)">
-                    <img src="/storage/{{$producto->id}}/mini_{{$image->image}}" width="150">
-                    <input value="{{$image->image}}" class="inputDelete" name="images[]" type="hidden">
-                    <i class="fa-solid fa-trash fs-1 btnDelete"></i>
-                </div>
-                @endforeach
-                @endif
-                <div id="deleteImages">
-                </div>
-            </div> <br>
 
             Fotos Adicionales:
-            <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="" multiple>
+{{--             <input class="form-control" type="file" accept="image/*" name="images[]" oninput="" value="">
 
+            <!-- Campo para la imagen principal -->
+            <input class="form-control" type="file" accept="image/*" name="image" value="{{ $producto->image ?? '' }}"><br> --}}
+
+            <div id="additional-images" style="display: flex; flex-wrap: wrap;">
+
+            </div>
+
+            <button type="button" class="btn btn-dark center mt-3" onclick="agregarImagen()">Agregar imagen</button>
 
             <div id="listItems">
                 @if(isset($items))
@@ -105,6 +118,46 @@
     @endsection
 
     <script>
+        @isset($images)
+            document.addEventListener('DOMContentLoaded', function() {
+                downloadImages(@json($images))
+                .then(images => {
+                    console.log('Imágenes descargadas:', images);
+                    images.forEach(function(image){
+                        agregarImagen(image);
+                        console.log(image);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al descargar las imágenes:', error);
+                });
+            });
+        @endisset
+
+
+        async function downloadImages(urls) {
+            const images = [];
+
+            console.log(urls);
+
+            // Iterar sobre cada URL en el array
+            for (const url of urls) {
+                // Hacer una solicitud para descargar la imagen
+                const response = await fetch(url);
+                const blob = await response.blob();
+
+                // Crear un objeto File a partir de la imagen descargada
+                const filename = url.substring(url.lastIndexOf('/') + 1);
+                const file = new File([blob], filename, { type: blob.type });
+
+                // Agregar el archivo al array de imágenes descargadas
+                images.push(file);
+            }
+
+            // Retornar el array de imágenes descargadas
+            return images;
+        } 
+
         var editor = []; // Creamos un array para guardar los editores de texto wysiwyg
 
         // Esta función se ejecuta cuando se selecciona una categoría. Carga de forma asíncrona todos los ítems de 
@@ -171,14 +224,199 @@
             }
         }
 
-        function activar_btn() {
-            // Desactiva el botón de enviar hasta que se selecciona una categoría
-            if (document.getElementById("categoria_id").value !== "") {
-                document.getElementById("submitButton").disabled = false;
-            } else {
-                document.getElementById("submitButton").disabled = true;
+        // Función para agregar una nueva entrada de imagen al formulario
+        function agregarImagen(file=null) {
+            var container = document.getElementById('additional-images');
+            var input = document.createElement('input');
+            input.style = "display: none";
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.name = 'additional_images[]'; // Cambia esto según tu controlador de Laravel
+
+            // Contenedor para la vista previa de la imagen
+            var previewContainer = document.createElement('div');
+            previewContainer.style = 'margin: 0 auto 10px'; // Ajusta el margen inferior del contenedor de vista previa
+            previewContainer.classList.add('imagen-ordenar');
+
+            previewTextFlex = document.createElement('div');
+            previewTextFlex.style = "display: flex;  justify-content: center; align-content: center; padding: 5px; text-align: center";
+ 
+            previewText = document.createElement('p');
+            previewText.innerHTML = "Inserta una imagen";
+
+            previewTextFlex.appendChild(previewText);
+
+            previewContainer.appendChild(previewTextFlex);
+
+            function previewImage(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100%'; // Ajustar el tamaño máximo de la imagen
+                        previewContainer.innerHTML = ''; // Limpiar la vista previa antes de agregar una nueva imagen
+                        previewContainer.appendChild(img);
+                        previewContainer.style.display = 'block'; // Mostrar la vista previa de la imagen
+                        input.style.display = 'none'; // Ocultar el campo de entrada de la imagen
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            // Función para mostrar la vista previa de la imagen seleccionada
+            input.addEventListener('change', function(event){
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100%'; // Ajustar el tamaño máximo de la imagen
+                        previewContainer.innerHTML = ''; // Limpiar la vista previa antes de agregar una nueva imagen
+                        previewContainer.appendChild(img);
+                        previewContainer.style.display = 'block'; // Mostrar la vista previa de la imagen
+                        input.style.display = 'none'; // Ocultar el campo de entrada de la imagen
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            });
+
+            // Función para volver a mostrar el campo de entrada de la imagen al hacer clic en la vista previa
+            previewContainer.addEventListener('click', function() {
+                input.click()
+            });
+
+            // Botones de flechas para reordenar
+            var leftButton = document.createElement('button');
+            leftButton.type = 'button'; // Especificar tipo de botón
+            leftButton.textContent = '←';
+            leftButton.classList = "btn btn-secondary"
+            leftButton.style = "margin: 1px"
+            leftButton.onclick = function() {
+                moverImagen(input, -1);
+            };
+            var rightButton = document.createElement('button');
+            rightButton.type = 'button'; // Especificar tipo de botón
+            rightButton.textContent = '→';
+            rightButton.classList = "btn btn-secondary"
+            rightButton.style = "margin: 1px"
+            rightButton.onclick = function() {
+                moverImagen(input, 1);
+            };
+
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.classList = "btn btn-danger center";
+            deleteButton.style = "margin: 1px"
+            deleteButton.onclick = function() {
+                imageContainer.remove();
+            };
+
+            // Contenedor para los botones de flechas
+            var buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.appendChild(leftButton);
+            buttonContainer.appendChild(rightButton);
+            buttonContainer.appendChild(deleteButton);
+
+            // Contenedor para la imagen y los botones de flechas
+            var imageContainer = document.createElement('div');
+            imageContainer.style.display = 'flex';
+            imageContainer.style.flexDirection = 'column'; // Alinear elementos verticalmente
+            imageContainer.style.margin = '10px'; // Alinear elementos verticalmente
+            imageContainer.style.justifyContent = 'center'; // Alinear elementos verticalmente
+            imageContainer.appendChild(input);
+            imageContainer.appendChild(previewContainer); // Agregar la vista previa de la imagen
+            imageContainer.appendChild(buttonContainer);
+
+            container.appendChild(imageContainer);
+
+            if(file){
+                const fileList = new DataTransfer();
+                fileList.items.add(file);
+                input.files = fileList.files;
+                previewImage(input);
             }
         }
+
+
+        // Función para reordenar una imagen
+        function moverImagen(input, delta) {
+            var container = input.parentNode.parentNode;
+            var index = Array.prototype.indexOf.call(container.children, input.parentNode);
+
+            if (delta < 0 && index > 0) {
+                container.insertBefore(container.children[index], container.children[index - 1]);
+            } else if (delta > 0 && index < container.children.length - 1) {
+                container.insertBefore(container.children[index + 1], container.children[index]);
+            }
+        }
+
+        // Función para activar el botón de envío cuando se selecciona al menos una categoría
+        function activar_btn() {
+            var submitButton = document.getElementById('submitButton');
+            var categoria_id = document.getElementById('categoria_id').value;
+            if (categoria_id !== "") {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        /* // Llama a la función de activación del botón cuando se selecciona una categoría
+        document.getElementById('categoria_id').addEventListener('change', activar_btn); */
+
+        function mostrarVistaPrevia(event) {
+        var input = event.target;
+        
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                var previewContainer = document.getElementById('preview-container');
+                previewContainer.innerHTML = ''; // Limpiar la vista previa antes de agregar una nueva imagen
+                
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%'; // Ajustar el tamaño máximo de la imagen
+                previewContainer.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Función para reordenar una imagen
+    function moverImagen(input, delta) {
+        var container = input.parentNode.parentNode;
+        var index = Array.prototype.indexOf.call(container.children, input.parentNode);
+
+        if (delta < 0 && index > 0) {
+            container.insertBefore(container.children[index], container.children[index - 1]);
+        } else if (delta > 0 && index < container.children.length - 1) {
+            container.insertBefore(container.children[index + 1], container.children[index]);
+        }
+
+        // Actualizar el valor de los inputHidden con los nuevos IDs de imagen
+        actualizarIdsImagenes(container);
+    }
+
+    // Función para actualizar los IDs de las imágenes después de reordenarlas
+    function actualizarIdsImagenes(container) {
+        var images = container.querySelectorAll('input[type="file"]');
+        images.forEach(function(image, index) {
+            var newId = 'image_' + index;
+            image.id = newId;
+            // Actualizar el valor de los inputHidden
+            var hiddenInput = image.nextElementSibling; // Obtener el siguiente elemento que es el inputHidden
+            hiddenInput.value = newId;
+        });
+    }
+    
 
     </script>
 
