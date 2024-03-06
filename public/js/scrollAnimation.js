@@ -14,10 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function applyScrollLogic(modal) {
         var imgs = modal.querySelectorAll('.img-wrapper img');
-        var carousel = modal.querySelector('.carousel');
         var flecha = modal.querySelector('.flecha');
         var title = modal.querySelector('h2');
-        var scrollThreshold = 50;
+        var scrollThreshold = 20;
         var isScrolled = false;
         var isImageLarge = false;
 
