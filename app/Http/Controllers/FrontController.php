@@ -36,8 +36,9 @@ class FrontController extends Controller
             // entre todos los valores de ese ítem. Excepto si estamos usando el buscador, en cuyo caso lanzaremos la búsqueda
             // en el else ignorando el ítem destacado.
 
-            // Recuperamos todos los valores del item destacado
+            // Recuperamos todos los valores del item destacado y el nombre de este
             $idItemDestacado = $destacados[0]->id;
+            $nombreItemDestacado = $destacados[0]->name;
             $valores = Items::recuperarValores($idItemDestacado);
             
             // Eliminamos todas las etiquetas y los valores unicode vacíos (%E2%80%8E)
@@ -70,6 +71,7 @@ class FrontController extends Controller
             $data['valores'] = $valores;
             $data['categoria'] = $categoria;
             $data['idItem'] = $idItemDestacado;
+            $data['nombreItem'] = $nombreItemDestacado;
             $data['opciones'] = Opciones::convertToArray();
             $data['categoriasList'] = Categorias::orderBy('order')->get();
             return view('front.categorias_destacados', $data);
