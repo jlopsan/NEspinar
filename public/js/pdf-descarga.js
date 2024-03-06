@@ -6,8 +6,14 @@
 // https://rawgit.com/MrRio/jsPDF/master/docs/index.html
 
 
-window.jsPDF = window.jspdf.jsPDF;      // Debe ser una variable global para que funcione html2canvas
-
+window.jsPDF = window.jspdf.jsPDF;    
+  // Debe ser una variable global para que funcione html2canvas
+function eliminarEtiquetasHTML(textoConHTML) {
+    // Expresión regular para eliminar etiquetas HTML
+    const expresionRegular = /<(script|style)[^>]*>[\s\S]*?<\/\1>|<\/?[^>]+>/gm;
+    // Reemplazar las etiquetas HTML con una cadena vacía
+    return textoConHTML.replace(expresionRegular, '');
+}
 
 // Genera un PDF con los datos del producto y la imagen del carrusel.
 // Recibe como parámetros el JSON del producto, el ID de la imagen en el árbol DOM, un JSON con los items del producto y el nombre de la categoría.
@@ -62,7 +68,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
 
     if (doc.getTextDimensions(`${product.name}`).w < anchuraDoc - 50) {
-        doc.text(`${product.name}`, xProdName, 82);
+        doc.text(`${eliminarEtiquetasHTML(product.name)}`, xProdName, 82);
     } else {
         let arrayTitulo = doc.splitTextToSize(product.name,anchuraDoc - 100)
         
@@ -70,7 +76,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         for (let i = 0; i < arrayTitulo.length; i++) {
             let longitudMitad = doc.getStringUnitWidth(arrayTitulo[i])* doc.internal.getFontSize();
             let xtitulo = ((anchuraDoc/2)-(longitudMitad/2))
-            doc.text(`${arrayTitulo[i]}`,xtitulo,ytitulo);
+            doc.text(`${eliminarEtiquetasHTML(arrayTitulo[i])}`,xtitulo,ytitulo);
             ytitulo+= interlineado;
         }
     };
@@ -84,13 +90,12 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
         doc.text(`${items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')}`, xitem, 135);
     }
     else {
-        let arrayItem = doc.splitTextToSize(items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, ''),anchuraDoc - 100)
-        
+        let arrayItem = doc.splitTextToSize(eliminarEtiquetasHTML(items[0].pivot.value.replace(/<p>/gi, '').replace(/<\/p>/gi, '').replace(/\./g, '')),anchuraDoc - 100)
         let yItem = 145;
         for (let i = 0; i < arrayItem.length; i++) {
             let longitudMitad = doc.getStringUnitWidth(arrayItem[i])* doc.internal.getFontSize();
             let xitem = ((anchuraDoc/2)-(longitudMitad/2))
-            doc.text(`${arrayItem[i]}`,xitem,yItem);
+            doc.text(`${eliminarEtiquetasHTML(arrayItem[i])}`,xitem,yItem);
             yItem+= 20;
         }
     }
@@ -123,7 +128,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
                 doc.setFontSize(14);
-                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                 doc.setFontSize(12);
                 doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
@@ -145,7 +150,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                         for (let z = 0; z < arrayLineas.length; z++) {
 
                             if (ysiguiente+interlineado < alturaDoc - 50){
-                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                 ysiguiente += interlineado;
                                 x = 56;
                             }
@@ -165,7 +170,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                                 let ysiguiente = 90;
                                 doc.setFont(fontName, "bold");
-                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                                 doc.setFont(fontName, "normal");
                                 ysiguiente += interlineado;
 
@@ -179,14 +184,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                                     if (longitudC > anchuraDocWM - 50) {
                                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                                         for (let z = 0; z < arrayLineas.length; z++) {
-                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                             ysiguiente += interlineado;
                                             x = 56;
                                         }
                                     
                                     }
                                     else {
-                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                                         ysiguiente += interlineado;
                                     }
 
@@ -201,7 +206,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                     }
                     else {
 
-                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                         
                         ysiguiente += interlineado;
 
@@ -226,7 +231,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                 let ysiguiente = 90;
                 doc.setFont(fontName, "bold");
-                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                 doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
 
@@ -241,7 +246,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                         for (let z = 0; z < arrayLineas.length; z++) {
                             if (ysiguiente+interlineado < alturaDoc - 50){
-                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                 ysiguiente += interlineado;
                                 x = 56;
                             }
@@ -261,7 +266,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                                 let ysiguiente = 90;
                                 doc.setFont(fontName, "bold");
-                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                                 doc.setFont(fontName, "normal");
                                 ysiguiente += interlineado;
 
@@ -275,14 +280,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                                     if (longitudC > anchuraDocWM - 50) {
                                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                                         for (let z = 0; z < arrayLineas.length; z++) {
-                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                             ysiguiente += interlineado;
                                             x = 56;
                                         }
                                     
                                     }
                                     else {
-                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                                         ysiguiente += interlineado;
                                     }
 
@@ -294,7 +299,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                        
                     }
                     else {
-                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                         ysiguiente += interlineado;
                     }
 
@@ -323,7 +328,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                 let ysiguiente = cordenada;
                 doc.setFont(fontName, "bold");
 
-                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                 doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
 
@@ -338,7 +343,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                         for (let z = 0; z < arrayLineas.length; z++) {
                             if (ysiguiente+interlineado < alturaDoc - 50){
-                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                 ysiguiente += interlineado;
                                 x = 56;
                             }
@@ -358,7 +363,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                                 let ysiguiente = 90;
                                 doc.setFont(fontName, "bold");
-                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                                 doc.setFont(fontName, "normal");
                                 ysiguiente += interlineado;
 
@@ -372,14 +377,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                                     if (longitudC > anchuraDocWM - 50) {
                                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                                         for (let z = 0; z < arrayLineas.length; z++) {
-                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                             ysiguiente += interlineado;
                                             x = 56;
                                         }
                                     
                                     }
                                     else {
-                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                                         ysiguiente += interlineado;
                                     }
 
@@ -391,7 +396,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                        
                     }
                     else {
-                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                         ysiguiente += interlineado;
                     }
 
@@ -414,7 +419,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                 let ysiguiente = 90;
                 doc.setFont(fontName, "bold");
-                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                 doc.setFont(fontName, "normal");
                 ysiguiente += interlineado;
 
@@ -429,7 +434,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                         for (let z = 0; z < arrayLineas.length; z++) {
                             if (ysiguiente+interlineado < alturaDoc - 50){
-                                doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                 ysiguiente += interlineado;
                                 x = 56;
                             }
@@ -449,7 +454,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
 
                                 let ysiguiente = 90;
                                 doc.setFont(fontName, "bold");
-                                doc.text(`${items[i].name} :`, 56.68, ysiguiente);
+                                doc.text(`${eliminarEtiquetasHTML(items[i].name)} :`, 56.68, ysiguiente);
                                 doc.setFont(fontName, "normal");
                                 ysiguiente += interlineado;
 
@@ -463,14 +468,14 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                                     if (longitudC > anchuraDocWM - 50) {
                                         arrayLineas = doc.splitTextToSize(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''), anchuraDocWM - 50);
                                         for (let z = 0; z < arrayLineas.length; z++) {
-                                            doc.text(`${arrayLineas[z]}`, x, ysiguiente);
+                                            doc.text(`${eliminarEtiquetasHTML(arrayLineas[z])}`, x, ysiguiente);
                                             ysiguiente += interlineado;
                                             x = 56;
                                         }
                                     
                                     }
                                     else {
-                                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                                         ysiguiente += interlineado;
                                     }
 
@@ -482,7 +487,7 @@ function imprimir(json_product, image_id, json_items, category, opciones) {
                        
                     }
                     else {
-                        doc.text(`${arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, '')}`, 70, ysiguiente);
+                        doc.text(`${eliminarEtiquetasHTML(arrayP[k].replace(/<p>/gi, '').replace(/<\/p>/gi, ''))}`, 70, ysiguiente);
                         ysiguiente += interlineado;
                     }
                 } 
