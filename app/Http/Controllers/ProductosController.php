@@ -9,6 +9,7 @@ use App\Models\ItemsProductos;
 use App\Models\Imagenes;
 use App\Models\Items;
 use App\Models\Opciones;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -222,7 +223,7 @@ class ProductosController extends Controller
         if($r->textoBusqueda == trim('') && $r -> idCategoria == null) {
             return self::index();
         } 
-        $productosList = Productos::busquedaProductos($r->idCategoria, $r->textoBusqueda);
+        $productosList = Productos::busquedaProductos($r->idCategoria, $r->textoBusqueda, $r->page);
         return view('productos.all', ['textoBusqueda'=> $r->textoBusqueda, 'productosList'=>$productosList, 'categorias'=>$categorias, 'idCategoria' => $r->idCategoria]);
     }
 }
