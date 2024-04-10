@@ -98,7 +98,7 @@ class Productos extends Model
             $page = 0;
         }
         $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
-        $offset = $elementosPorPagina * $page;
+        $offset = $elementosPorPagina * ($page - 1);
         $resultadoBusqueda = collect();  // Creamos colección vacía para ir añadiendo los resultados de las búsquedas
         $elementosTotales = 0; //Inicializamos la cantidad de elementos a devolver
         if ($textoBusquedaOG == "" && $idCategoria != NULL) {
@@ -137,7 +137,13 @@ class Productos extends Model
         }
         // Paginamos el resultado
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        if(empty($textoBusqueda)) {
+            return new LengthAwarePaginator($resultadoBusqueda, $elementosTotales, $elementosPorPagina, $page, ["path"=>url("buscadorBack?idCategoria=$idCategoria&textoBusqueda=")]);
+        }else if(empty($idCategoria)){
+            return new LengthAwarePaginator($resultadoBusqueda, $elementosTotales, $elementosPorPagina, $page, ["path"=>url("buscadorBack?idCategoria=&textoBusqueda=$textoBusqueda")]);
+        }
         return new LengthAwarePaginator($resultadoBusqueda, $elementosTotales, $elementosPorPagina, $page, ["path"=>url("buscadorBack?idCategoria=$idCategoria&textoBusqueda=$textoBusqueda")]);
+        
     }
     /*_______________________________________buscador productos backoffice__________________________________________________ */
 
