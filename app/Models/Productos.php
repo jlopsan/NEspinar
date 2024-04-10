@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -91,36 +92,52 @@ class Productos extends Model
 
     /* Buscador front/back que segun en la categoria en la que se encuentra ejecutara la consulta contra esa categoria */
     /* Si el idCategoria es NULL, busca en todas las categorias*/
-    public static function busquedaProductos($idCategoria, $textoBusquedaOG)
+    public static function busquedaProductos($idCategoria, $textoBusquedaOG, $page)
     {
+        if($page==NULL){
+            $page = 0;
+        }
         $elementosPorPagina = Opciones::where('key', 'paginacion_cantidad_elementos')->first()->value;
+        $offset = $elementosPorPagina * $page;
         $resultadoBusqueda = collect();  // Creamos colección vacía para ir añadiendo los resultados de las búsquedas
+        $elementosTotales = 0; //Inicializamos la cantidad de elementos a devolver
         if ($textoBusquedaOG == "" && $idCategoria != NULL) {
             // CASO 1: No hay texto de búsqueda, pero sí hay categoría --> Buscamos todos los productos de la categoría
+            $elementosTotales = count($resultadoBusqueda->merge(Productos::with('categoria')
+                ->where("productos.categoria_id", "$idCategoria")->distinct()->get()));
             $resultadoBusqueda = $resultadoBusqueda->merge(Productos::with('categoria')
-                ->where("productos.categoria_id", "$idCategoria")->distinct()->get());
+                ->where("productos.categoria_id", "$idCategoria")->distinct()->skip($offset)->take($elementosPorPagina)->get());
         } else if ($textoBusquedaOG == "" && $idCategoria == NULL) {
             // CASO 2: No hay texto de búsqueda ni categoría --> Buscamos todos los productos
-            $resultadoBusqueda = $resultadoBusqueda->merge(Productos::all());
+            $elementosTotales = count($resultadoBusqueda->merge(Productos::all()));
+            $resultadoBusqueda = $resultadoBusqueda->merge(Productos::all()->skip($offset)->take($elementosPorPagina));
         } else {
             // CASO 3: Hay texto de búsqueda --> Buscamos productos que coincidan con el texto de búsqueda
             $textoLimpio = self::preparacionString($textoBusquedaOG); // Limpia el texto de palabras comunes (como artículos) y lo trocea en palabras individuales
             foreach ($textoLimpio as $textoBusqueda) {
                 if ($idCategoria != NULL) {
+                    $elementosTotales = count($resultadoBusqueda->merge(Productos::with('categoria')
+                    ->where("productos.categoria_id", "$idCategoria")
+                    ->where("productos.name", "like", "%$textoBusqueda%")->distinct()
+                    ->get()));
                     $resultadoBusqueda = $resultadoBusqueda->merge(Productos::with('categoria')
                         ->where("productos.categoria_id", "$idCategoria")
-                        ->where("productos.name", "like", "%$textoBusqueda%")->distinct()->get());
+                        ->where("productos.name", "like", "%$textoBusqueda%")->distinct()
+                        ->skip($offset)
+                        ->take($elementosPorPagina)
+                        ->get());
                 } else {
-                    $resultadoBusqueda = $resultadoBusqueda->merge(Productos::where("productos.name", "like", "%$textoBusqueda%")->get());
+                    $elementosTotales = count($resultadoBusqueda->merge(Productos::where("productos.name", "like", "%$textoBusqueda%")->get()));
+                    $resultadoBusqueda = $resultadoBusqueda->merge(Productos::where("productos.name", "like", "%$textoBusqueda%")
+                    ->skip($offset)
+                    ->take($elementosPorPagina)->get());
                 }
                 
             }
         }
         // Paginamos el resultado
-        $resultadoPaginado = new LengthAwarePaginator($resultadoBusqueda, count($resultadoBusqueda), $elementosPorPagina);
-        $resultadoPaginado->appends(['textoBusqueda' => $textoBusquedaOG]);
-        if ($idCategoria != NULL) $resultadoPaginado->appends(['idCategoria' => $idCategoria]);
-        return $resultadoPaginado;
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        return new LengthAwarePaginator($resultadoBusqueda, $elementosTotales, $elementosPorPagina, $page, ["path"=>url("buscadorBack?idCategoria=$idCategoria&textoBusqueda=$textoBusqueda")]);
     }
     /*_______________________________________buscador productos backoffice__________________________________________________ */
 
